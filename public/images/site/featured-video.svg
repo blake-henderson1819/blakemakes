@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" role="img" aria-label="[PLACEHOLDER: featured video]">
+<rect width="100%" height="100%" fill="#d9d6cf"/>
+<rect x="1" y="1" width="1598" height="898" fill="none" stroke="#a9a59c" stroke-width="2"/>
+<text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="ui-monospace, Menlo, monospace" font-size="40" fill="#55524c">[PLACEHOLDER: featured video]</text>
+<text x="50%" y="507.14285714285717" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="23" fill="#7a766e">1600 × 900</text>
+</svg>

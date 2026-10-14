@@ -1,0 +1,23 @@
+---
+layout: base.njk
+---
+{%- set idx = 0 -%}
+{%- for p in collections.projects -%}{%- if p.url == page.url -%}{%- set idx = loop.index -%}{%- endif -%}{%- endfor -%}
+<article class="project wrap">
+  <header class="project__head">
+    <p class="spec"><span>BH-{{ idx | pad }}</span><span>{{ page.date | monthYear }}</span>{% for t in tags %}{% if t != "projects" %}<span>{{ t }}</span>{% endif %}{% endfor %}</p>
+    <h1>{{ title }}</h1>
+    <p class="lede">{{ summary }}</p>
+  </header>
+  {% if video %}
+  <figure class="project__video">
+    {% set src = video %}{% set poster = cover %}{% set label = title + " demo video" %}{% include "media.njk" %}
+  </figure>
+  {% else %}
+  <figure class="project__cover"><img src="{{ cover }}" alt="{{ title }} — cover photo" width="1600" height="1000"></figure>
+  {% endif %}
+  <div class="prose">
+    {{ content | safe }}
+  </div>
+  <nav class="project__back" aria-label="Project navigation"><a href="/#projects">← All projects</a></nav>
+</article>

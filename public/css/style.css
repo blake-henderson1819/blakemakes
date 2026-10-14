@@ -1,0 +1,86 @@
+:root{
+  --paper:#f7f4ee; --ink:#1b1a17; --ink-2:#4a4740; --rule:#d6d0c4; --grid:#ebe6dc;
+  --accent:#d9480f; /* safety orange — use sparingly */
+  --serif: "Iowan Old Style","Charter","Bitstream Charter","Sitka Text",Cambria,Georgia,serif;
+  --mono: ui-monospace,"SFMono-Regular","JetBrains Mono","IBM Plex Mono",Menlo,Consolas,monospace;
+  --measure: 38rem; --wide: 72rem;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:1.125rem/1.6 var(--serif);text-rendering:optimizeLegibility}
+img,video,iframe{display:block;max-width:100%;height:auto}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:.2em}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.wrap{max-width:var(--wide);margin:0 auto;padding:0 1.25rem}
+.mono,.spec,.label,.wordmark,nav,dt,figcaption,.footer{font-family:var(--mono)}
+.accent{color:var(--accent)}
+.skip{position:absolute;left:-999px}.skip:focus{left:1rem;top:1rem;background:var(--ink);color:var(--paper);padding:.5rem}
+
+/* masthead with ruler ticks along its bottom edge */
+.masthead{border-bottom:1px solid var(--ink);position:relative}
+.masthead::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;
+  background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px);opacity:.35}
+.masthead__inner{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-top:1rem;padding-bottom:1.1rem;flex-wrap:wrap}
+.wordmark{font-weight:700;text-decoration:none;font-size:1rem;letter-spacing:-.01em}
+nav ul{list-style:none;margin:0;padding:0;display:flex;gap:1.25rem;font-size:.85rem}
+nav a{text-decoration:none}
+
+/* spec line: like a part label */
+.spec{display:flex;flex-wrap:wrap;gap:0;margin:0 0 .75rem;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-2)}
+.spec span+span::before{content:"/";margin:0 .6em;color:var(--rule)}
+
+/* section label: numbered with a thin rule */
+.label{display:flex;align-items:center;gap:.75rem;font-size:.8rem;font-weight:400;letter-spacing:.06em;text-transform:uppercase;margin:0 0 1.5rem}
+.label::after{content:"";flex:1;border-top:1px solid var(--rule)}
+.label__no{color:var(--accent)}
+
+main>section{margin-top:4.5rem}
+main>.intro{margin-top:4rem}
+.intro h1{font-size:clamp(2.2rem,6vw,4.25rem);line-height:1.02;letter-spacing:-.02em;font-weight:600;margin:0 0 1.5rem;max-width:16ch}
+.intro__sub{font-weight:400;font-style:italic;color:var(--ink-2)}
+.lede{font-size:1.25rem;max-width:var(--measure);color:var(--ink-2);margin:0}
+
+.featured__media{margin:0}
+.featured__media img,.featured__media video,.embed{width:100%;border:1px solid var(--ink)}
+.embed{aspect-ratio:16/9}.embed iframe{width:100%;height:100%;border:0}
+figcaption{font-size:.8rem;color:var(--ink-2);margin-top:.6rem}
+
+.cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:3rem 2.5rem}
+@media (min-width:760px){.cards{grid-template-columns:1fr 1fr}}
+.card a{text-decoration:none;display:block}
+.card img{width:100%;aspect-ratio:16/10;object-fit:cover;border:1px solid var(--ink);margin-bottom:1rem}
+.card h3{font-size:1.6rem;line-height:1.15;margin:0 0 .35rem;font-weight:600}
+.card p:last-child{margin:0;color:var(--ink-2)}
+.card a:hover h3{color:var(--accent)}
+
+/* about gets a faint graph-paper ground */
+.about__text{max-width:var(--measure);margin:0;font-size:1.25rem;padding:1.5rem;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:20px 20px;border-left:2px solid var(--ink)}
+
+.contact__list{margin:0;max-width:var(--measure)}
+.contact__list div{display:grid;grid-template-columns:7rem 1fr;border-bottom:1px solid var(--rule);padding:.6rem 0}
+dt{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);padding-top:.2rem}
+dd{margin:0;word-break:break-word}
+.ph{font-family:var(--mono);font-size:.75rem;color:var(--ink-2)}
+
+/* project page */
+.project{padding-top:3.5rem}
+.project h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.05;letter-spacing:-.02em;margin:0 0 1rem;max-width:22ch;font-weight:600}
+.project__head{margin-bottom:2rem}
+.project__cover,.project__video{margin:0 0 3rem}
+.project__cover img,.project__video video,.project__video img{width:100%;border:1px solid var(--ink)}
+.prose{max-width:var(--measure)}
+.prose h2{font-family:var(--mono);font-size:.85rem;font-weight:400;text-transform:uppercase;letter-spacing:.06em;
+  margin:3rem 0 1rem;padding-top:.75rem;border-top:1px solid var(--ink);display:flex;gap:.75rem}
+.prose{counter-reset:sec}
+.prose h2::before{counter-increment:sec;content:counter(sec,decimal-leading-zero);color:var(--accent)}
+.prose img{width:100%;border:1px solid var(--rule);margin:1.5rem 0}
+@media (min-width:1000px){.prose p>img:only-child{width:calc(100% + 12rem);max-width:none}}
+.prose li{margin:.3rem 0}
+.project__back{margin:4rem 0 0;font-family:var(--mono);font-size:.85rem}
+
+.footer{margin-top:5rem;border-top:1px solid var(--ink);font-size:.75rem;color:var(--ink-2)}
+.footer__inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding-top:1rem;padding-bottom:2rem}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}

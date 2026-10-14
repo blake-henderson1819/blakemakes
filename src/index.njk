@@ -1,0 +1,53 @@
+---
+layout: base.njk
+---
+{%- set fv = null -%}
+{%- for p in collections.projects -%}{%- if not fv and p.data.featured and p.data.video -%}{%- set fv = p -%}{%- endif -%}{%- endfor -%}
+<section class="intro wrap" aria-labelledby="intro-h">
+  <p class="spec"><span>Oregon State University</span><span>Engineering</span></p>
+  <h1 id="intro-h">Blake Henderson<br><span class="intro__sub">builds things and writes down how.</span></h1>
+  <p class="lede">{{ site.intro }}</p>
+</section>
+
+<section class="featured wrap" aria-labelledby="featured-h">
+  <h2 id="featured-h" class="label"><span class="label__no">01</span> Featured build</h2>
+  <figure class="featured__media">
+    {% if fv %}
+      {% set src = fv.data.video %}{% set poster = fv.data.cover %}{% set label = fv.data.title + " video" %}{% include "media.njk" %}
+      <figcaption class="mono"><a href="{{ fv.url }}">{{ fv.data.title }}</a> — {{ fv.data.summary }}</figcaption>
+    {% else %}
+      {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "Featured project video placeholder" %}{% include "media.njk" %}
+      <figcaption class="mono">{{ site.featuredVideoCaption }}</figcaption>
+    {% endif %}
+  </figure>
+</section>
+
+<section id="projects" class="projects wrap" aria-labelledby="projects-h">
+  <h2 id="projects-h" class="label"><span class="label__no">02</span> Projects</h2>
+  <ol class="cards">
+    {% for p in collections.projects %}
+    <li class="card">
+      <a href="{{ p.url }}">
+        <img src="{{ p.data.cover }}" alt="" width="1600" height="1000" loading="lazy">
+        <p class="spec"><span>BH-{{ loop.index | pad }}</span><span>{{ p.date | monthYear }}</span></p>
+        <h3>{{ p.data.title }}</h3>
+        <p>{{ p.data.summary }}</p>
+      </a>
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+
+<section id="about" class="about wrap" aria-labelledby="about-h">
+  <h2 id="about-h" class="label"><span class="label__no">03</span> About</h2>
+  <p class="about__text">{{ site.about }}</p>
+</section>
+
+<section id="contact" class="contact wrap" aria-labelledby="contact-h">
+  <h2 id="contact-h" class="label"><span class="label__no">04</span> Contact</h2>
+  <dl class="contact__list">
+    <div><dt>Email</dt><dd><a href="mailto:{{ site.email }}">{{ site.email }}</a>{% if site.emailIsPlaceholder %} <span class="ph">[PLACEHOLDER]</span>{% endif %}</dd></div>
+    <div><dt>GitHub</dt><dd><a href="{{ site.github }}">{{ site.github | replace("https://", "") }}</a></dd></div>
+    <div><dt>LinkedIn</dt><dd><a href="{{ site.linkedin }}">{{ site.linkedin | replace("https://www.", "") }}</a></dd></div>
+  </dl>
+</section>

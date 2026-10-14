@@ -1,0 +1,15 @@
+{
+  "name": "Blake Henderson",
+  "domain": "blakemakes.xyz",
+  "url": "https://blakemakes.xyz",
+  "description": "Projects and build notes by Blake Henderson, engineering student at Oregon State.",
+  "intro": "I'm Blake, an engineering student at Oregon State. This is where I document the things I design and build — including the versions that didn't work.",
+  "featuredVideo": "",
+  "featuredVideoPoster": "/images/site/featured-video.svg",
+  "featuredVideoCaption": "[PLACEHOLDER: one-line caption for the featured project video]",
+  "about": "[PLACEHOLDER: 2–4 sentences about you in your own words — what you study, what you like to build, what tools you use. Keep it specific; skip the buzzwords.]",
+  "email": "hello@blakemakes.xyz",
+  "emailIsPlaceholder": true,
+  "github": "https://github.com/PLACEHOLDER",
+  "linkedin": "https://www.linkedin.com/in/PLACEHOLDER"
+}
