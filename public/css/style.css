@@ -84,3 +84,10 @@ dd{margin:0;word-break:break-word}
 .footer{margin-top:5rem;border-top:1px solid var(--ink);font-size:.75rem;color:var(--ink-2)}
 .footer__inner{display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;padding-top:1rem;padding-bottom:2rem}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* homepage headline + subtitle */
+@font-face{font-family:"Newsreader";src:url(/fonts/newsreader-var-latin.woff2) format("woff2");font-weight:400 700;font-style:normal;font-display:swap}
+.intro{padding-bottom:clamp(1rem,3vw,2.5rem)}
+.intro h1{font-family:"Newsreader",var(--serif);font-size:clamp(2.9rem,8.4vw,7.75rem);line-height:.94;letter-spacing:-.035em;font-weight:500;
+  margin:0 0 clamp(1.75rem,3.5vw,3rem);max-width:13ch;text-wrap:balance}
+.intro .lede{font-size:clamp(1.2rem,1.7vw,1.45rem);line-height:1.5;max-width:34rem;text-wrap:pretty}
