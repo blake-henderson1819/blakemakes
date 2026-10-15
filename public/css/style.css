@@ -91,3 +91,6 @@ dd{margin:0;word-break:break-word}
 .intro h1{font-family:"Newsreader",var(--serif);font-size:clamp(2.9rem,8.4vw,7.75rem);line-height:.94;letter-spacing:-.035em;font-weight:500;
   margin:0 0 clamp(1.75rem,3.5vw,3rem);max-width:13ch;text-wrap:balance}
 .intro .lede{font-size:clamp(1.2rem,1.7vw,1.45rem);line-height:1.5;max-width:34rem;text-wrap:pretty}
+
+.featured__note{margin-top:.75rem;max-width:40rem}
+.featured__note a{color:var(--accent,inherit)}
