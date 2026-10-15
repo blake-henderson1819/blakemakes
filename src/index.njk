@@ -16,7 +16,7 @@ layout: base.njk
       {% set src = fv.data.video %}{% set poster = fv.data.cover %}{% set label = fv.data.title + " video" %}{% include "media.njk" %}
       <figcaption class="mono"><a href="{{ fv.url }}">{{ fv.data.title }}</a> — {{ fv.data.summary }}</figcaption>
     {% else %}
-      {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "Featured project video placeholder" %}{% include "media.njk" %}
+      {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "VLM car demo video" %}{% include "media.njk" %}
       <figcaption class="mono">{{ site.featuredVideoCaption }}</figcaption>
     {% endif %}
   </figure>

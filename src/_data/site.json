@@ -4,12 +4,12 @@
   "url": "https://blakemakes.xyz",
   "description": "Projects and build notes by Blake Henderson, engineering student at Oregon State.",
   "intro": "I'm Blake, an engineering student at Oregon State. This is where I document the things I design and build.",
-  "featuredVideo": "",
+  "featuredVideo": "https://www.youtube-nocookie.com/embed/Yh9-R5hkVOY",
   "featuredVideoPoster": "/images/site/featured-video.svg",
-  "featuredVideoCaption": "[PLACEHOLDER: one-line caption for the featured project video]",
+  "featuredVideoCaption": "[PLACEHOLDER: VLM car — 1–2 sentences on what the car does and what you built]",
   "about": "[PLACEHOLDER: 2–4 sentences about you in your own words — what you study, what you like to build, what tools you use. Keep it specific; skip the buzzwords.]",
   "email": "hello@blakemakes.xyz",
   "emailIsPlaceholder": true,
-  "github": "https://github.com/PLACEHOLDER",
+  "github": "https://github.com/blake-henderson1819",
   "linkedin": "https://www.linkedin.com/in/PLACEHOLDER"
 }
