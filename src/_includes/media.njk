@@ -1,5 +1,5 @@
 {%- if src and ("youtube.com" in src or "youtu.be" in src or "vimeo.com" in src) -%}
-<div class="embed"><iframe src="{{ src }}" title="{{ label }}" loading="lazy" allow="fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+<div class="embed"><iframe src="{{ src }}" title="{{ label }}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
 {%- elif src -%}
 <video controls preload="metadata" playsinline {% if poster %}poster="{{ poster }}"{% endif %}><source src="{{ src }}"></video>
 {%- else -%}
