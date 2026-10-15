@@ -8,8 +8,8 @@
   "featuredVideoPoster": "/images/site/featured-video.svg",
   "featuredVideoCaption": "[PLACEHOLDER: VLM car — 1–2 sentences on what the car does and what you built]",
   "about": "I have built many different things in the past, but here is where I will document them from now on. More to come in the near future.",
-  "email": "hello@blakemakes.xyz",
-  "emailIsPlaceholder": true,
+  "email": "blakejordanhenderson@gmail.com",
+  "emailIsPlaceholder": false,
   "github": "https://github.com/blake-henderson1819",
   "linkedin": "https://www.linkedin.com/in/blakejordanhenderson"
 }
