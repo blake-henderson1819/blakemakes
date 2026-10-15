@@ -17,7 +17,6 @@ layout: base.njk
       <figcaption class="mono"><a href="{{ fv.url }}">{{ fv.data.title }}</a> — {{ fv.data.summary }}</figcaption>
     {% else %}
       {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "VLM car demo video" %}{% include "media.njk" %}
-      <figcaption class="mono">{{ site.featuredVideoCaption }}</figcaption>
       <p class="featured__note">To see how it works, check out the <a href="https://github.com/blake-henderson1819/vlm-car">VLM car repo on GitHub</a>. The <a href="https://github.com/blake-henderson1819/vlm-car#readme">README</a> covers what goes into it.</p>
     {% endif %}
   </figure>

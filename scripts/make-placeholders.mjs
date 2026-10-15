@@ -8,10 +8,10 @@ const box = (label, w = 1600, h = 1000) => `<svg xmlns="http://www.w3.org/2000/s
 </svg>`;
 const files = {
   "public/images/site/featured-video.svg": box("[PLACEHOLDER: featured video]", 1600, 900),
-  "public/images/projects/example-project-one/cover.svg": box("[PLACEHOLDER: project one cover photo]"),
+  "public/images/projects/example-project-one/cover.svg": box("More things Coming Soon"),
   "public/images/projects/example-project-one/demo.svg": box("[PLACEHOLDER: project one demo]", 1600, 900),
   "public/images/projects/example-project-one/detail.svg": box("[PLACEHOLDER: detail / CAD image]"),
-  "public/images/projects/example-project-two/cover.svg": box("[PLACEHOLDER: project two cover photo]"),
+  "public/images/projects/example-project-two/cover.svg": box("More things Coming Soon"),
   "public/images/projects/example-project-two/demo.svg": box("[PLACEHOLDER: project two demo]", 1600, 900),
 };
 for (const [p, svg] of Object.entries(files)) {
