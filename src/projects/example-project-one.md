@@ -1,9 +1,9 @@
 ---
 # PLACEHOLDER TEMPLATE — copy this file, rename it, and replace every [PLACEHOLDER].
-title: "[PLACEHOLDER: project title]"
+title: "Coming Soon"
 date: 2026-09-01
-summary: "[PLACEHOLDER: one line describing what this thing is or does]"
-cover: /images/projects/example-project-one/cover.svg
+summary: "Next build, currently in CAD."
+cover: /images/projects/example-project-one/coming-soon.webp
 video: ""            # e.g. /images/projects/example-project-one/demo.mp4 or a YouTube embed URL
 featured: true       # the most recent featured project with a video fills the homepage video slot
 tags: [placeholder, cad, fabrication]
