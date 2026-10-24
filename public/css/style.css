@@ -58,6 +58,9 @@ figcaption{font-size:.8rem;color:var(--ink-2);margin-top:.6rem}
 .about__text{max-width:var(--measure);margin:0;font-size:1.25rem;padding:1.5rem;
   background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
   background-size:20px 20px;border-left:2px solid var(--ink)}
+.about__body{display:flex;flex-direction:column;align-items:flex-start;gap:1.25rem}
+.about__photo{width:112px;height:112px;border-radius:50%;object-fit:cover;border:1px solid var(--rule);background:#fff;flex:none}
+@media (min-width:760px){.about__body{flex-direction:row;align-items:center;gap:2rem}.about__photo{width:152px;height:152px}}
 
 .contact__list{margin:0;max-width:var(--measure)}
 .contact__list div{display:grid;grid-template-columns:7rem 1fr;border-bottom:1px solid var(--rule);padding:.6rem 0}

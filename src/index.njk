@@ -40,7 +40,10 @@ layout: base.njk
 
 <section id="about" class="about wrap" aria-labelledby="about-h">
   <h2 id="about-h" class="label"><span class="label__no">03</span> About</h2>
-  <p class="about__text">{{ site.about }}</p>
+  <div class="about__body">
+    <img class="about__photo" src="/images/blake.webp" alt="Blake Henderson" width="480" height="480" loading="lazy">
+    <p class="about__text">{{ site.about }}</p>
+  </div>
 </section>
 
 <section id="contact" class="contact wrap" aria-labelledby="contact-h">
