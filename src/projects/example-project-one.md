@@ -3,7 +3,7 @@
 title: "Combat Robot"
 date: 2026-09-01
 summary: "Computer vision autonomous combat robot."
-cover: /images/projects/example-project-one/coming-soon.webp
+cover: /images/projects/example-project-one/cad-v3.webp
 video: ""            # e.g. /images/projects/example-project-one/demo.mp4 or a YouTube embed URL
 featured: true       # the most recent featured project with a video fills the homepage video slot
 tags: [placeholder, cad, fabrication]
