@@ -17,9 +17,20 @@ tags: [placeholder, cad, fabrication]
 <figcaption style="text-align:center">Getting the drive and weapon spinning. It's pretty scary so far. Computer vision coming next.</figcaption>
 </figure>
 
-## What I designed
+## What I'm designing
 
-A horizontal spinner combat robot that uses computer vision to orient toward opponents and attack them ruthlessly and autonomously.
+### Exterminate: Building an Autonomous Combat Robot
+
+Exterminate started as a 3D-printed PLA prototype to prove out the layout and electronics. An Arduino Nano drives two N20 gear motors through a TB6612 motor driver and controls a brushless spinner weapon through a 40A ESC, all on a 3S battery with a HotRC remote. The next step is to take the driver out of the loop.
+
+<details class="readmore">
+<summary></summary>
+
+<p>For the autonomous version, I'm adding a Raspberry Pi 5 with an AI accelerator HAT, plus two onboard cameras facing forward and backward, so the robot can see almost all the way around itself. A YOLO object detector running on the HAT finds the opponent in real time, and a Python control program turns that into steering and throttle commands. It switches between searching, charging, and backing off after a hit, and it remembers which way the opponent went when it leaves the frame. The Pi sends those commands to the Nano, which still handles the motors and weapon. I keep a manual override on the remote, and a failsafe shuts everything down if the Pi ever goes quiet.</p>
+
+<p>The final build will move from PLA to tougher materials like a TPU or UHMW chassis and a hardened steel spinner, with all the electronics on a compact soldered perf board. Follow along as I go from a prototype that drives to a robot that fights on its own.</p>
+
+</details>
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/example-project-one/coming-soon.webp" alt="First CAD pass of the combat robot" width="1600" height="1000" loading="lazy" style="margin:0">

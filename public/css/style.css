@@ -97,3 +97,10 @@ dd{margin:0;word-break:break-word}
 
 .featured__note{margin-top:.75rem;max-width:40rem}
 .featured__note a{color:var(--accent,inherit)}
+
+/* Read more toggle on project pages */
+.readmore summary{list-style:none;cursor:pointer;color:var(--accent);font-family:var(--mono);font-size:.85rem;margin:.25rem 0 1rem}
+.readmore summary::-webkit-details-marker{display:none}
+.readmore summary::after{content:"Read more \2193"}
+.readmore[open] summary::after{content:"Show less \2191"}
+.readmore summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
