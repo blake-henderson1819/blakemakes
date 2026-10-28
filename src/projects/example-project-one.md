@@ -33,7 +33,7 @@ tags: [placeholder, cad, fabrication]
 
 ## Design decisions
 
-- [PLACEHOLDER: decision 1 — what you chose and why]
+- I chose an asymmetric horizontal spinner because it's the most aggressive, damage-dealing design, and it pairs well with a computer vision system that can quickly reorient the robot after hits.
 - [PLACEHOLDER: decision 2 — the trade-off you made]
 - [PLACEHOLDER: decision 3]
 
