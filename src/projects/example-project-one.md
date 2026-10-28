@@ -39,7 +39,7 @@ tags: [placeholder, cad, fabrication]
 
 ## Failed iterations
 
-[PLACEHOLDER: What broke, didn't fit, or didn't work the first time? What did you change? Photos of failed parts are great here.]
+I tried using cheap brushed N20 motors for the drive, and they stripped out within just a few minutes of use. I'm now upgrading to more powerful motors designed specifically for combat robots.
 
 ## Results
 
