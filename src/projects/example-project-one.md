@@ -33,8 +33,8 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 </details>
 
 <figure style="margin:1.5rem 0">
-<img src="/images/projects/example-project-one/coming-soon.webp" alt="First CAD pass of the combat robot" width="1600" height="1000" loading="lazy" style="margin:0">
-<figcaption>First CAD pass</figcaption>
+<img src="/images/projects/example-project-one/cad-v3.webp" alt="Latest CAD of the combat robot with the Raspberry Pi and electronics inside the chassis and a purple spinner bar on a brushless motor" width="1302" height="984" loading="lazy" style="margin:0">
+<figcaption>Latest CAD: the Raspberry Pi and electronics are packed into the chassis, with the spinner on a 2830 1100KV brushless motor.</figcaption>
 </figure>
 
 <figure style="margin:1.5rem 0">
@@ -43,8 +43,8 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 </figure>
 
 <figure style="margin:1.5rem 0">
-<img src="/images/projects/example-project-one/cad-v3.webp" alt="Latest CAD of the combat robot with the Raspberry Pi and electronics inside the chassis and a purple spinner bar on a brushless motor" width="1302" height="984" loading="lazy" style="margin:0">
-<figcaption>Latest CAD: the Raspberry Pi and electronics are packed into the chassis, with the spinner on a 2830 1100KV brushless motor.</figcaption>
+<img src="/images/projects/example-project-one/coming-soon.webp" alt="First CAD pass of the combat robot" width="1600" height="1000" loading="lazy" style="margin:0">
+<figcaption>First CAD pass</figcaption>
 </figure>
 
 ## Design decisions
