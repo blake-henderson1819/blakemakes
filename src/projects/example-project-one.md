@@ -19,7 +19,7 @@ tags: [placeholder, cad, fabrication]
 
 ## What I designed
 
-[PLACEHOLDER: What is it, what problem does it solve, and which parts did you personally design and build? Mention the tools/processes (CAD, 3D printing, machining, electronics, code).]
+A horizontal spinner combat robot that uses computer vision to orient toward opponents and attack them ruthlessly and autonomously.
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/example-project-one/coming-soon.webp" alt="First CAD pass of the combat robot" width="1600" height="1000" loading="lazy" style="margin:0">
