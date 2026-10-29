@@ -2,22 +2,22 @@
 layout: base.njk
 ---
 {%- set fv = null -%}
-{%- for p in collections.projects -%}{%- if not fv and p.data.featured and (p.data.homeVideo or p.data.video) -%}{%- set fv = p -%}{%- endif -%}{%- endfor -%}
+{%- for p in collections.projects -%}{%- if not fv and p.data.featured and (p.data.pinned or p.data.homeVideo or p.data.video) -%}{%- set fv = p -%}{%- endif -%}{%- endfor -%}
+<figure class="banner wrap">
+  <img src="/images/workbench.webp" alt="My desk at night: a laptop with code open, a multimeter, breadboards, jumper wires, and parts bins under a desk lamp" width="2000" height="1125">
+</figure>
+
 <section class="intro wrap" aria-labelledby="intro-h">
   <p class="spec"><span>Oregon State University</span><span>Engineering</span></p>
   <h1 id="intro-h">Where Blake Henderson builds dumb things and documents it</h1>
   <p class="lede">{{ site.intro }}</p>
 </section>
 
-<figure class="banner wrap">
-  <img src="/images/workbench.webp" alt="My desk at night: a laptop with code open, a multimeter, breadboards, jumper wires, and parts bins under a desk lamp" width="2000" height="1125">
-</figure>
-
 <section class="featured wrap" aria-labelledby="featured-h">
   <h2 id="featured-h" class="label"><span class="label__no">01</span> Featured build</h2>
   <figure class="featured__media">
     {% if fv %}
-      {% set src = fv.data.homeVideo or fv.data.video %}{% set poster = fv.data.homePoster or fv.data.cover %}{% set label = fv.data.title + " video" %}{% include "media.njk" %}
+      {% set src = fv.data.homeVideo or fv.data.video %}{% set poster = fv.data.homePoster or fv.data.cover %}{% set label = fv.data.title %}{% include "media.njk" %}
       <figcaption class="mono"><a href="{{ fv.url }}">{{ fv.data.title }}</a> — {{ fv.data.summary }}</figcaption>
     {% else %}
       {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "VLM car demo video" %}{% include "media.njk" %}
