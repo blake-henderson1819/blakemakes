@@ -4,7 +4,7 @@ export default function (eleventyConfig) {
 
   // All Markdown files in src/projects/ become the "projects" collection, newest first
   eleventyConfig.addCollection("projects", (api) =>
-    api.getFilteredByGlob("src/projects/*.md").sort((a, b) => b.date - a.date)
+    api.getFilteredByGlob("src/projects/*.md").sort((a, b) => (b.data.pinned ? 1 : 0) - (a.data.pinned ? 1 : 0) || b.date - a.date)
   );
 
   eleventyConfig.addFilter("isoDate", (d) => new Date(d).toISOString().slice(0, 10));

@@ -2,7 +2,7 @@
 layout: base.njk
 ---
 {%- set fv = null -%}
-{%- for p in collections.projects -%}{%- if not fv and p.data.featured and p.data.video -%}{%- set fv = p -%}{%- endif -%}{%- endfor -%}
+{%- for p in collections.projects -%}{%- if not fv and p.data.featured and (p.data.homeVideo or p.data.video) -%}{%- set fv = p -%}{%- endif -%}{%- endfor -%}
 <section class="intro wrap" aria-labelledby="intro-h">
   <p class="spec"><span>Oregon State University</span><span>Engineering</span></p>
   <h1 id="intro-h">Where Blake Henderson builds dumb things and documents it</h1>
@@ -13,7 +13,7 @@ layout: base.njk
   <h2 id="featured-h" class="label"><span class="label__no">01</span> Featured build</h2>
   <figure class="featured__media">
     {% if fv %}
-      {% set src = fv.data.video %}{% set poster = fv.data.cover %}{% set label = fv.data.title + " video" %}{% include "media.njk" %}
+      {% set src = fv.data.homeVideo or fv.data.video %}{% set poster = fv.data.homePoster or fv.data.cover %}{% set label = fv.data.title + " video" %}{% include "media.njk" %}
       <figcaption class="mono"><a href="{{ fv.url }}">{{ fv.data.title }}</a> — {{ fv.data.summary }}</figcaption>
     {% else %}
       {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "VLM car demo video" %}{% include "media.njk" %}
