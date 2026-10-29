@@ -104,3 +104,5 @@ dd{margin:0;word-break:break-word}
 .readmore summary::after{content:"Read more \2193"}
 .readmore[open] summary::after{content:"Show less \2191"}
 .readmore summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.banner{margin-top:0;margin-bottom:2.5rem}
+.banner img{display:block;width:100%;aspect-ratio:21/9;object-fit:cover;object-position:center 45%;border:1px solid var(--ink)}
