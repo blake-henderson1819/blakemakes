@@ -10,6 +10,14 @@ featured: true       # the most recent featured project with a video fills the h
 tags: [placeholder, cad, fabrication]
 ---
 
+## Update · Oct 29, 2026 · Turn-only person tracking
+
+<div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/CEK7YcAtK6Y" title="Exterminate turn-only person tracking" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+
+Before letting Exterminate drive at anyone, I'm getting it to just face me. The Pi 5 runs YOLOv8n on the camera feed at about 19 fps and sends turn commands to the Nano 30 times a second. The green box is me, and the cyan line is center. Detection stays locked on, but at nearly 10 lb the current drive motors can only really turn at full power, so tracking is stop-and-go and sometimes overshoots.
+
+Next up: stronger hobbyweight drive motors for smoother turns.
+
 ## Update · Oct 29, 2026
 
 ### Exterminate Update: It Hunts Now
