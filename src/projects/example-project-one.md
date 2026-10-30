@@ -95,17 +95,3 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 <img src="/images/projects/example-project-one/coming-soon.webp" alt="First CAD pass of the combat robot" width="1600" height="1000" loading="lazy" style="margin:0">
 <figcaption>First CAD pass</figcaption>
 </figure>
-
-## Design decisions
-
-- I chose an asymmetric horizontal spinner because it's the most aggressive, damage-dealing design, and it pairs well with a computer vision system that can quickly reorient the robot after hits.
-- [PLACEHOLDER: decision 2 — the trade-off you made]
-- [PLACEHOLDER: decision 3]
-
-## Failed iterations
-
-I tried using cheap brushed N20 motors for the drive, and they stripped out within just a few minutes of use. I'm now upgrading to more powerful motors designed specifically for combat robots.
-
-## Results
-
-[PLACEHOLDER: How did it turn out? Only include real measurements or outcomes. What would you do next?]
