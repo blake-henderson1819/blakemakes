@@ -30,7 +30,7 @@ async function decodePlay(onp) { // play-and-sample via requestVideoFrameCallbac
   return new Promise(async (res, rej) => {
     let last = performance.now();
     const cb = (now, m) => { last = performance.now(); const t = m.mediaTime;
-      if (t + 1e-3 >= next) { out.push(sample(v, t)); next = t + 1 / FPS; onp(t / meta.dur, out.length); }
+      try { if (t + 1e-3 >= next) { out.push(sample(v, t)); next = t + 1 / FPS; onp(t / meta.dur, out.length); } } catch (e) { note("sample", e); }
       if (!v.ended) v.requestVideoFrameCallback(cb); };
     v.requestVideoFrameCallback(cb); v.playbackRate = 1;
     try { await v.play(); } catch (e) { return rej(e); }
@@ -57,40 +57,67 @@ function makePage(frame, t) { const q = C.detectQuad(frame); const flat = q ? C.
 function render(p) { if (!p.out[mode]) p.out[mode] = toCanvas(C.enhance(p.flat, mode)).toDataURL('image/jpeg', 0.9); return p.out[mode]; }
 
 const st = $('#status'), bar = $('#bar'), dbg = $('#dbg');
-// ---- on-device hand detector (MediaPipe HandLandmarker, vendored) ----
-let hl = null, hlTried = false, hlErr = '';
+// ---- on-device hand detector (MediaPipe HandLandmarker, vendored, CPU delegate) ----
+let hl = null, hlTried = false, hlErr = ''; const errs = [];
+const note = (where, e) => { const m = `${where}: ${String(e && e.message || e).slice(0, 100)}`; errs.push(m); console.warn(m); };
 async function handModel() { if (hlTried) return hl; hlTried = true;
-  try { const base = new URL('vendor/mediapipe/', location.href).href, mp = await import(base + 'vision_bundle.mjs');
-    hl = await mp.HandLandmarker.createFromOptions({ wasmLoaderPath: base + 'vision_wasm_internal.js', wasmBinaryPath: base + 'vision_wasm_internal.wasm' },
-      { baseOptions: { modelAssetPath: base + 'hand_landmarker.task', delegate: 'CPU' }, runningMode: 'IMAGE', numHands: 2,
-        minHandDetectionConfidence: 0.3, minHandPresenceConfidence: 0.3, minTrackingConfidence: 0.3 });
-  } catch (e) { hl = null; hlErr = String(e.message || e).slice(0, 80); } return hl; }
+  try { const base = new URL('vendor/mediapipe/', location.href).href;
+    const load = (async () => { const mp = await import(base + 'vision_bundle.mjs');
+      return mp.HandLandmarker.createFromOptions({ wasmLoaderPath: base + 'vision_wasm_internal.js', wasmBinaryPath: base + 'vision_wasm_internal.wasm' },
+        { baseOptions: { modelAssetPath: base + 'hand_landmarker.task', delegate: 'CPU' }, runningMode: 'IMAGE', numHands: 2,
+          minHandDetectionConfidence: 0.5, minHandPresenceConfidence: 0.5, minTrackingConfidence: 0.5 }); })();
+    hl = await Promise.race([load, sleep(25000).then(() => { throw new Error('timeout loading model'); })]);
+  } catch (e) { hl = null; hlErr = String(e && e.message || e).slice(0, 100); note('detector init', e); } return hl; }
 async function frameBitmap(f) { for (let i = 0; i < 60 && !f.blob; i++) await sleep(50); return f.blob ? createImageBitmap(f.blob) : null; }
-async function hasHand(f) { if (f.mp != null) return f.mp; const m = await handModel(); if (!m) return (f.mp = false);
-  const bm = await frameBitmap(f); if (!bm) return (f.mp = false);
-  try { const r = m.detect(bm); f.mp = !!(r.landmarks && r.landmarks.length); } catch (e) { f.mp = false; } return f.mp; }
+// hand score (0..1) counting only hands that overlap the page region
+async function handScore(f) { if (f.det != null) return f.det; const m = await handModel(); if (!m) return (f.det = 0);
+  const bm = await frameBitmap(f); if (!bm) return (f.det = 0);
+  let region = [0.08, 0.08, 0.92, 0.92];
+  try { const c = document.createElement('canvas'), s = 400 / Math.max(bm.width, bm.height); c.width = Math.round(bm.width * s); c.height = Math.round(bm.height * s);
+    c.getContext('2d').drawImage(bm, 0, 0, c.width, c.height); const q = C.detectQuad(imgData(c));
+    if (q) { const xs = q.map(p => p[0] / c.width), ys = q.map(p => p[1] / c.height); region = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)]; } } catch (e) { note('page region', e); }
+  const r = m.detect(bm); let best = 0;
+  (r.landmarks || []).forEach((lm, h) => { const inside = lm.filter(p => p.x >= region[0] && p.x <= region[2] && p.y >= region[1] && p.y <= region[3]).length;
+    const sc = (r.handedness && r.handedness[h] && r.handedness[h][0] && r.handedness[h][0].score) || (r.handednesses && r.handednesses[h] && r.handednesses[h][0].score) || 0.6;
+    if (inside >= 3) best = Math.max(best, sc); });
+  bm.close && bm.close(); return (f.det = best); }
 
-let handPages = [];
-async function buildPages() { const r = C.segment(frames, { sensitivity: +$('#sens').value, fps: FPS });
-  const skinRej = C.skinGate(frames, r.diffs, r.still); st.textContent = 'Loading hand detector…'; await handModel();
-  const keep = [], hand = []; let mpRej = 0;
-  for (let k = 0; k < r.segments.length; k++) { const seg = r.segments[k]; st.textContent = `Checking for hands ${k + 1}/${r.segments.length}`;
-    let pick = null; const cand = C.candidates(frames, seg, r.diffs, r.still);
-    for (const i of cand.slice(0, 8)) { const had = frames[i].mp; if (!(await hasHand(frames[i]))) { pick = i; break; } if (had == null) mpRej++; }
-    if (pick != null) keep.push(pick); else hand.push(seg.reduce((b, i) => frames[i].sharp > frames[b].sharp ? i : b, seg[0]));
-    bar.value = 0.7 + 0.15 * (k + 1) / r.segments.length; }
-  const toPage = async (i, k, n) => { const f = frames[i]; st.textContent = `Cleaning page ${k + 1}/${n}`;
-    if (!cache.has(f)) cache.set(f, makePage(imgData(await frameCanvas(f)), f.t)); const p = cache.get(f); render(p); await sleep(0); return p; };
-  const np = []; for (let k = 0; k < keep.length; k++) { np.push(await toPage(keep[k], k, keep.length)); bar.value = 0.85 + 0.15 * (k + 1) / keep.length; }
-  const hp = []; for (let k = 0; k < hand.length; k++) hp.push(await toPage(hand[k], k, hand.length));
-  pages = np; handPages = hp; bar.value = 1;
-  st.textContent = `Found ${pages.length} hand-free page${pages.length === 1 ? '' : 's'}` + (hp.length ? `, ${hp.length} skipped (hand in every frame)` : '') + '.';
-  const mpTotal = frames.filter(f => f.mp).length;
-  dbg.textContent = `${meta.dur.toFixed(1)}s ${meta.w}×${meta.h} · ${frames.length} frames via ${meta.how}${meta.stuck ? ` (${meta.stuck} stuck)` : ''} · ${r.segs} segments · hand-rejected: ${skinRej} by skin, ${mpTotal} by detector${hl ? '' : ' (detector unavailable: ' + hlErr + ')'} · motion lo ${r.lo.toFixed(1)}/hi ${r.hi.toFixed(1)}/thr ${isFinite(r.thr) ? r.thr.toFixed(1) : '∞'} · kept @ ${keep.map(i => frames[i].t.toFixed(1)).join(', ')}s`;
-  $('#tools').classList.remove('hide'); draw(); }
+let stats = {}, lastSeg = null;
+function debugLine() { const s = stats;
+  dbg.textContent = `${meta.dur ? meta.dur.toFixed(1) : '?'}s ${meta.w || '?'}×${meta.h || '?'} via ${meta.how || '?'}${meta.stuck ? ` (${meta.stuck} stuck)` : ''} · sampled ${s.sampled ?? frames.length} · still ${s.still ?? '?'} · segments ${s.segments ?? '?'}${s.fallback ? ' (' + s.fallback + ')' : ''} · skin-rejected ${s.skinRejected ?? '?'} · detector ${hl ? `checked ${s.detChecked ?? 0}, rejected ${s.detRejected ?? 0}` : 'off' + (hlErr ? ' (' + hlErr + ')' : '')} · kept ${s.kept ?? 0} clean + ${s.flagged ?? 0} hand?` + (errs.length ? ' · errors: ' + errs.slice(-3).join(' | ') : ''); }
+async function buildPages() {
+  let res = null;
+  try { st.textContent = 'Loading hand detector…'; await handModel();
+    st.textContent = 'Picking hand-free frames…';
+    res = await C.choose(frames, { sensitivity: +$('#sens').value, fps: FPS, detThr: 0.5, detect: hl ? (i => handScore(frames[i])) : null });
+    stats = res.stats; lastSeg = res.seg; (stats.errors || []).forEach(e => errs.push('detect: ' + e));
+  } catch (e) { note('choose', e); }
+  if (!res || !res.pages.length) { // last-resort: evenly spaced sharpest frames
+    const per = Math.max(1, FPS * 2), pk = [];
+    for (let i = 0; i < frames.length; i += per) { const sl = frames.slice(i, i + per); pk.push({ idx: frames.indexOf(sl.reduce((a, b) => b.sharp > a.sharp ? b : a)), hand: true }); }
+    res = { pages: pk }; stats.fallback = 'last-resort'; stats.flagged = pk.length; }
+  const np = [];
+  for (let k = 0; k < res.pages.length; k++) { const f = frames[res.pages[k].idx]; st.textContent = `Cleaning page ${k + 1}/${res.pages.length}`;
+    try { if (!cache.has(f)) cache.set(f, makePage(imgData(await frameCanvas(f)), f.t)); const p = cache.get(f); p.hand = res.pages[k].hand; render(p); np.push(p); }
+    catch (e) { note('clean page', e); }
+    bar.value = 0.85 + 0.15 * (k + 1) / res.pages.length; await sleep(0); }
+  pages = np; bar.value = 1;
+  st.textContent = `Found ${pages.length} page${pages.length === 1 ? '' : 's'}` + (stats.flagged ? ` (${stats.flagged} may show a hand)` : '') + '.';
+  $('#tools').classList.remove('hide'); draw(); if ($('#allc').open) showCandidates(); }
+
+// "Show all candidates": every sampled still frame, tap to add
+function showCandidates() { const g = $('#candGrid'); g.innerHTML = ''; const d = lastSeg ? lastSeg.diffs : null, lim = lastSeg && isFinite(lastSeg.still) ? lastSeg.still : Infinity;
+  let list = frames.map((f, i) => i).filter(i => !d || d[i] < lim); if (list.length < 4) list = frames.map((f, i) => i);
+  $('#candN').textContent = list.length;
+  list.slice(0, 200).forEach(i => { const f = frames[i]; if (!f.blob) return; f.thumb = f.thumb || URL.createObjectURL(f.blob);
+    const el = document.createElement('div'); el.className = 'card';
+    el.innerHTML = `<img src="${f.thumb}" alt=""><div class="n">${f.t.toFixed(1)}s</div><div class="acts"><button class="btn sm">Add</button></div>`;
+    el.querySelector('button').onclick = async () => { try { if (!cache.has(f)) cache.set(f, makePage(imgData(await frameCanvas(f)), f.t)); const p = cache.get(f); p.hand = false;
+      if (!pages.includes(p)) { let at = pages.findIndex(q => q.t > p.t); if (at < 0) at = pages.length; pages.splice(at, 0, p); } draw(); } catch (e) { note('add', e); debugLine(); } };
+    g.appendChild(el); }); }
 
 async function handle(e) { const f = e.target.files[0]; if (!f) return; e.target.value = '';
-  if (url) URL.revokeObjectURL(url); url = URL.createObjectURL(f); cache = new Map();
+  if (url) URL.revokeObjectURL(url); url = URL.createObjectURL(f); cache = new Map(); errs.length = 0; stats = {}; hlTried = hl ? true : false;
   $('#prog').classList.remove('hide'); dbg.textContent = '';
   try { st.textContent = 'Loading video…'; await loadVideo(v, url);
     meta = { dur: v.duration, w: v.videoWidth, h: v.videoHeight, how: '', stuck: 0 };
@@ -100,14 +127,16 @@ async function handle(e) { const f = e.target.files[0]; if (!f) return; e.target
     if (v.requestVideoFrameCallback) { try { meta.how = 'playback'; frames = await decodePlay(onp); } catch (err) { frames = []; } }
     if (frames.length < Math.min(4, meta.dur * FPS * 0.5)) { meta.how = 'seeking'; frames = await decodeSeek(onp); }
     await buildPages();
-  } catch (err) { st.textContent = 'Error: ' + err.message; dbg.textContent = `${f.type || '?'} ${(f.size / 1e6).toFixed(1)}MB`; } }
+  } catch (err) { note('process', err); st.textContent = 'Error: ' + err.message; } finally { debugLine(); dbg.textContent += ` · file ${f.type || '?'} ${(f.size / 1e6).toFixed(1)}MB`; } }
 $('#pick').onchange = handle; $('#rec').onchange = handle;
-$('#sens').onchange = () => frames.length && buildPages();
+$('#sens').onchange = async () => { if (!frames.length) return; try { await buildPages(); } catch (e) { note('rebuild', e); } debugLine(); };
+$('#allc').ontoggle = () => { if ($('#allc').open) showCandidates(); };
+window.addEventListener('error', e => { note('js', e.message); debugLine(); }); window.addEventListener('unhandledrejection', e => { note('promise', e.reason); debugLine(); });
 
 function draw() { const g = $('#grid'); g.innerHTML = '';
   $('#count').textContent = pages.length + ' page' + (pages.length === 1 ? '' : 's');
   pages.forEach((p, i) => { const d = document.createElement('div'); d.className = 'card';
-    d.innerHTML = `<img src="${render(p)}" alt="Page ${i + 1}"><div class="n">Page ${i + 1}${p.cropped ? '' : ' · uncropped'}</div>
+    d.innerHTML = `<img src="${render(p)}" alt="Page ${i + 1}"><div class="n">Page ${i + 1}${p.cropped ? '' : ' · uncropped'}${p.hand ? ' <span class="badge">hand?</span>' : ''}</div>
      <div class="acts"><button class="btn sm" data-a="up" aria-label="Move up">↑</button><button class="btn sm" data-a="dn" aria-label="Move down">↓</button>
      <button class="btn sm" data-a="sh" aria-label="Share">⤴</button><button class="btn sm" data-a="rm" aria-label="Delete">✕</button></div>`;
     d.querySelector('img').onclick = () => { $('#vimg').src = render(p); $('#viewer').dataset.i = i; $('#viewer').style.display = 'flex'; };
@@ -118,11 +147,7 @@ function draw() { const g = $('#grid'); g.innerHTML = '';
       else if (a === 'sh') return share([i]);
       draw(); });
     g.appendChild(d); });
-  const hs = $('#handSec'); hs.classList.toggle('hide', !handPages.length); $('#handN').textContent = handPages.length; const hg = $('#handGrid'); hg.innerHTML = '';
-  handPages.forEach((p, i) => { const d = document.createElement('div'); d.className = 'card';
-    d.innerHTML = `<img src="${render(p)}" alt="Skipped page"><div class="n">${p.t.toFixed(1)}s · hand</div><div class="acts"><button class="btn sm">Restore</button></div>`;
-    d.querySelector('button').onclick = () => { handPages.splice(i, 1); let at = pages.findIndex(q => q.t > p.t); if (at < 0) at = pages.length; pages.splice(at, 0, p); draw(); };
-    hg.appendChild(d); }); }
+}
 $('#mode').onclick = e => { const m = e.target.dataset.m; if (!m) return; mode = m;
   $('#mode').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === m)); draw(); };
 $('#vclose').onclick = () => $('#viewer').style.display = 'none';

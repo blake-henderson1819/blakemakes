@@ -175,6 +175,39 @@
         out[i + 3] = 255; } }
     return { data: out, width: W, height: H };
   }
-  root.ScanCore = { occlusion, skinGate, candidates, pct, thumb, gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 64, SH: 64 };
+  // Relative, graded selection. Never returns empty when frames exist.
+  // detect(i) -> Promise<number> hand score 0..1 on the page region (optional). Returns {pages:[{idx,hand,evidence}], stats}
+  async function choose(frames, opts = {}) {
+    const st = { sampled: frames.length, still: 0, segments: 0, skinRejected: 0, detRejected: 0, detChecked: 0, kept: 0, flagged: 0, fallback: '' };
+    if (!frames.length) return { pages: [], stats: st, seg: null };
+    const r = segment(frames, opts); const d = r.diffs, lim = isFinite(r.still) ? r.still : Infinity;
+    st.still = frames.filter((f, i) => d[i] < lim).length;
+    let segs = r.segments;
+    if (!segs.length) { // fallback: evenly spaced chunks (~2 s each)
+      st.fallback = 'even'; const per = Math.max(1, Math.round((opts.fps || 6) * 2)); segs = [];
+      for (let i = 0; i < frames.length; i += per) segs.push(frames.slice(i, i + per).map((_, k) => i + k)); }
+    st.segments = segs.length; const out = [];
+    for (const seg of segs) {
+      const minSkin = Math.min(...seg.map(i => frames[i].skin || 0)), nb = frames[seg[0]].blocks ? frames[seg[0]].blocks.length : 0, minB = [];
+      for (let k = 0; k < nb; k++) minB.push(Math.min(...seg.map(i => frames[i].blocks[k])));
+      const maxS = Math.max(...seg.map(i => frames[i].sharp)) || 1;
+      const info = seg.map(i => { const f = frames[i]; let bx = 0; for (let k = 0; k < nb; k++) bx = Math.max(bx, f.blocks[k] - minB[k]);
+        const ex = Math.max((f.skin || 0) - minSkin, bx / 6); // skin excess vs best frame in this stretch
+        const bad = (f.skin || 0) - minSkin > 0.015 || bx > 0.2; return { i, ex, bad, moving: d[i] >= lim, sharp: f.sharp / maxS, det: null }; });
+      st.skinRejected += info.filter(x => x.bad).length;
+      const order = info.slice().sort((a, b) => (a.bad - b.bad) || (a.moving - b.moving) || (a.ex - b.ex) * 4 || (b.sharp - a.sharp));
+      let pick = null;
+      for (const x of order.slice(0, opts.maxDetect || 6)) { if (x.bad) break;
+        if (!opts.detect) { pick = x; break; }
+        try { x.det = await opts.detect(x.i); } catch (e) { x.det = 0; (st.errors = st.errors || []).push(String(e && e.message || e)); }
+        st.detChecked++; if (x.det < (opts.detThr || 0.5)) { pick = x; break; } st.detRejected++; }
+      if (pick) out.push({ idx: pick.i, hand: false, evidence: pick.ex });
+      else { // least hand evidence
+        const ev = x => (x.det == null ? 0.5 : x.det) * 0.5 + x.ex * 10 + (x.moving ? 0.3 : 0) - x.sharp * 0.05;
+        const best = info.reduce((a, b) => ev(b) < ev(a) ? b : a); out.push({ idx: best.i, hand: true, evidence: ev(best) }); st.flagged++; }
+    }
+    st.kept = out.filter(p => !p.hand).length; return { pages: out, stats: st, seg: r };
+  }
+  root.ScanCore = { choose, occlusion, skinGate, candidates, pct, thumb, gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 64, SH: 64 };
   if (typeof module !== 'undefined') module.exports = root.ScanCore;
 })(typeof self !== 'undefined' ? self : globalThis);
