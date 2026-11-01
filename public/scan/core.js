@@ -23,76 +23,7 @@
   // skin fraction over the WHOLE frame plus a 6x6 grid of per-block skin fractions (hands enter from edges)
   function isSkin(r, g, b) { const Y = 0.299 * r + 0.587 * g + 0.114 * b, cb = 128 - 0.1687 * r - 0.3313 * g + 0.5 * b, cr = 128 + 0.5 * r - 0.4187 * g - 0.0813 * b;
     return cr > 135 && cr < 180 && cb > 75 && cb < 128 && Y > 45 && r > g && r > b && r - b > 15; }
-  function occlusion(img) {
-    const w = img.width, h = img.height, d = img.data, G = 6, blk = new Float32Array(G * G), cnt = new Float32Array(G * G); let skin = 0, dark = 0, n = 0;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4, k = Math.min(G - 1, (y * G / h) | 0) * G + Math.min(G - 1, (x * G / w) | 0);
-      const s = isSkin(d[i], d[i + 1], d[i + 2]); if (s) { skin++; blk[k]++; } cnt[k]++;
-      if (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2] < 60) dark++; n++; }
-    for (let k = 0; k < blk.length; k++) blk[k] /= cnt[k] || 1;
-    return { skin: skin / n, dark: dark / n, blocks: blk };
-  }
-  // per-video adaptive skin gate: marks f.skinHand = true when skin clearly exceeds this video's baseline
-  // baseline comes only from low-motion frames (page turns shift the page and would skew it)
-  function skinGate(frames, diffs, still) {
-    if (!frames.length) return 0; const nb = frames[0].blocks ? frames[0].blocks.length : 0;
-    let ref = diffs ? frames.filter((f, i) => diffs[i] < still) : frames; if (ref.length < 3) ref = frames;
-    const base = pct(ref.map(f => f.skin || 0), 0.1), bb = [];
-    for (let k = 0; k < nb; k++) bb.push(pct(ref.map(f => f.blocks[k]), 0.1));
-    let c = 0;
-    for (const f of frames) { let hand = (f.skin || 0) > base + 0.012;
-      for (let k = 0; k < nb && !hand; k++) if (f.blocks[k] - bb[k] > 0.18) hand = true;
-      f.skinHand = hand; if (hand) c++; }
-    return c;
-  }
-  // candidates in a stretch: low motion + skin-gate pass, sharpest first
-  function candidates(frames, seg, diffs, lim) {
-    if (lim == null || !isFinite(lim)) lim = Infinity;
-    return seg.filter(i => !frames[i].skinHand && diffs[i] < lim && (diffs[i + 1] == null || diffs[i + 1] < lim))
-      .sort((a, b) => frames[b].sharp - frames[a].sharp); }
   function pct(arr, p) { const s = arr.slice().sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))] || 0; }
-  // frames: [{t, sharp, g, skin, dark}]. sensitivity 0..1 (higher = more pages)
-  function segment(frames, opts = {}) {
-    const n = frames.length; if (!n) return { picks: [], diffs: [], thr: 0, segs: 0 };
-    const sens = opts.sensitivity == null ? 0.5 : opts.sensitivity;
-    const raw = [0]; for (let i = 1; i < n; i++) raw.push(diff(frames[i].g, frames[i - 1].g));
-    raw[0] = raw[1] || 0;
-    const d = raw.map((_, i) => (raw[Math.max(0, i - 1)] + 2 * raw[i] + raw[Math.min(n - 1, i + 1)]) / 4); // smooth
-    const lo = pct(d, 0.25), hi = pct(d, 0.95), mx = Math.max(...d);
-    // adaptive threshold between the typical "hold" jitter and turn peaks
-    const frac = 0.55 - 0.4 * sens; // sens 0 -> 0.55, 1 -> 0.15
-    let thr = Math.max(lo * 1.5 + 0.5, lo + (hi - lo) * frac);
-    if (hi - lo < 1.5) thr = Infinity; // no real motion: single page
-    const fps = opts.fps || 6, minLen = Math.max(2, Math.round(fps * 0.3));
-    let segs = []; let cur = [];
-    for (let i = 0; i < n; i++) { if (d[i] < thr) cur.push(i); else { if (cur.length) segs.push(cur); cur = []; } }
-    if (cur.length) segs.push(cur);
-    segs = segs.filter(r => r.length >= minLen);
-    // fallback: too few segments but clear peaks -> split by motion peaks
-    const dur = (frames[n - 1].t - frames[0].t);
-    if (segs.length <= 1 && dur > 3 && mx > lo * 2 + 1) {
-      const pthr = lo + (mx - lo) * (0.5 - 0.35 * sens), gap = Math.round(fps * 0.8), peaks = [];
-      for (let i = 1; i < n - 1; i++) if (d[i] >= pthr && d[i] >= d[i - 1] && d[i] >= d[i + 1]) {
-        if (peaks.length && i - peaks[peaks.length - 1] < gap) { if (d[i] > d[peaks[peaks.length - 1]]) peaks[peaks.length - 1] = i; } else peaks.push(i); }
-      if (peaks.length) { segs = []; let s0 = 0;
-        for (const p of [...peaks, n]) { const seg = []; for (let i = s0; i < p; i++) if (Math.abs(i - p) > 1 && (s0 === 0 || i - s0 > 1)) seg.push(i);
-          if (seg.length >= 1) segs.push(seg); s0 = p + 1; } }
-    }
-    const pickOf = seg => {
-      const minOcc = Math.min(...seg.map(i => (frames[i].skin || 0) + 0.5 * (frames[i].dark || 0)));
-      const maxS = Math.max(...seg.map(i => frames[i].sharp)) || 1;
-      let best = seg[0], bs = -Infinity;
-      seg.forEach((i, k) => { const occ = (frames[i].skin || 0) + 0.5 * (frames[i].dark || 0) - minOcc;
-        const pos = seg.length > 1 ? k / (seg.length - 1) : 1;
-        const s = frames[i].sharp / maxS + 0.25 * pos - 25 * occ; // occlusion dominates
-        if (s > bs) { bs = s; best = i; } });
-      return best; };
-    let picks = segs.map(pickOf);
-    // no image-similarity merge: different text pages look alike at thumbnail scale under handshake
-    const out = picks.slice();
-    if (!out.length) out.push(pickOf(frames.map((_, i) => i)));
-    return { segments: segs, picks: out.map(i => ({ idx: i, t: frames[i].t, sharp: frames[i].sharp })), diffs: d, thr, segs: segs.length, lo, hi, still: hi - lo < 1.5 ? Infinity : lo + (hi - lo) * 0.3 };
-  }
-  // ---- quad detection: largest bright blob, corners by extremes ----
   function detectQuad(img) {
     const W = img.width, H = img.height, sc = 300 / Math.max(W, H), w = Math.round(W * sc), h = Math.round(H * sc);
     const g = gray(img, w, h);
@@ -177,37 +108,60 @@
   }
   // Relative, graded selection. Never returns empty when frames exist.
   // detect(i) -> Promise<number> hand score 0..1 on the page region (optional). Returns {pages:[{idx,hand,evidence}], stats}
-  async function choose(frames, opts = {}) {
-    const st = { sampled: frames.length, still: 0, segments: 0, skinRejected: 0, detRejected: 0, detChecked: 0, kept: 0, flagged: 0, fallback: '' };
-    if (!frames.length) return { pages: [], stats: st, seg: null };
-    const r = segment(frames, opts); const d = r.diffs, lim = isFinite(r.still) ? r.still : Infinity;
-    st.still = frames.filter((f, i) => d[i] < lim).length;
-    let segs = r.segments;
-    if (!segs.length) { // fallback: evenly spaced chunks (~2 s each)
-      st.fallback = 'even'; const per = Math.max(1, Math.round((opts.fps || 6) * 2)); segs = [];
-      for (let i = 0; i < frames.length; i += per) segs.push(frames.slice(i, i + per).map((_, k) => i + k)); }
-    st.segments = segs.length; const out = [];
-    for (const seg of segs) {
-      const minSkin = Math.min(...seg.map(i => frames[i].skin || 0)), nb = frames[seg[0]].blocks ? frames[seg[0]].blocks.length : 0, minB = [];
-      for (let k = 0; k < nb; k++) minB.push(Math.min(...seg.map(i => frames[i].blocks[k])));
-      const maxS = Math.max(...seg.map(i => frames[i].sharp)) || 1;
-      const info = seg.map(i => { const f = frames[i]; let bx = 0; for (let k = 0; k < nb; k++) bx = Math.max(bx, f.blocks[k] - minB[k]);
-        const ex = Math.max((f.skin || 0) - minSkin, bx / 6); // skin excess vs best frame in this stretch
-        const bad = (f.skin || 0) - minSkin > 0.015 || bx > 0.2; return { i, ex, bad, moving: d[i] >= lim, sharp: f.sharp / maxS, det: null }; });
-      st.skinRejected += info.filter(x => x.bad).length;
-      const order = info.slice().sort((a, b) => (a.bad - b.bad) || (a.moving - b.moving) || (a.ex - b.ex) * 4 || (b.sharp - a.sharp));
-      let pick = null;
-      for (const x of order.slice(0, opts.maxDetect || 6)) { if (x.bad) break;
-        if (!opts.detect) { pick = x; break; }
-        try { x.det = await opts.detect(x.i); } catch (e) { x.det = 0; (st.errors = st.errors || []).push(String(e && e.message || e)); }
-        st.detChecked++; if (x.det < (opts.detThr || 0.5)) { pick = x; break; } st.detRejected++; }
-      if (pick) out.push({ idx: pick.i, hand: false, evidence: pick.ex });
-      else { // least hand evidence
-        const ev = x => (x.det == null ? 0.5 : x.det) * 0.5 + x.ex * 10 + (x.moving ? 0.3 : 0) - x.sharp * 0.05;
-        const best = info.reduce((a, b) => ev(b) < ev(a) ? b : a); out.push({ idx: best.i, hand: true, evidence: ev(best) }); st.flagged++; }
-    }
-    st.kept = out.filter(p => !p.hand).length; return { pages: out, stats: st, seg: r };
+  // ---- page fingerprint: corner keypoints + BRIEF descriptors (robust to shake, lighting, the page sliding/rotating/zooming,
+  // and partial occlusion by hands); two frames are compared by how many keypoints agree on one similarity transform (RANSAC) ----
+function blur(g,w,h){const o=new Float32Array(w*h),t=new Float32Array(w*h);const r=2;
+ for(let y=0;y<h;y++){let s=0;for(let x=-r;x<=r;x++)s+=g[y*w+Math.min(w-1,Math.max(0,x))];for(let x=0;x<w;x++){t[y*w+x]=s/(2*r+1);s+=g[y*w+Math.min(w-1,x+r+1)]-g[y*w+Math.max(0,x-r)];}}
+ for(let x=0;x<w;x++){let s=0;for(let y=-r;y<=r;y++)s+=t[Math.min(h-1,Math.max(0,y))*w+x];for(let y=0;y<h;y++){o[y*w+x]=s/(2*r+1);s+=t[Math.min(h-1,y+r+1)*w+x]-t[Math.max(0,y-r)*w+x];}}return o;}
+let PAIRS=null;function pairs(){if(PAIRS)return PAIRS;let s=12345;const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff};const P=new Int8Array(256*4);
+ for(let i=0;i<256*4;i++){let v;do{v=Math.round((rnd()+rnd()+rnd()-1.5)*8)}while(Math.abs(v)>13);P[i]=v;}return PAIRS=P;}
+function features(g,w,h,N=400){const b=blur(g,w,h),P=pairs(),R=new Float32Array(w*h);
+ for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++){let a=0,bb=0,c=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const i=(y+dy)*w+x+dx,ix=g[i+1]-g[i-1],iy=g[i+w]-g[i-w];a+=ix*ix;bb+=iy*iy;c+=ix*iy;}
+  R[y*w+x]=(a+bb)/2-Math.sqrt(((a-bb)/2)**2+c*c);}
+ const C=8,pts=[];for(let cy=16;cy<h-16;cy+=C)for(let cx=16;cx<w-16;cx+=C){let m=0,mi=-1;for(let y=cy;y<Math.min(h-16,cy+C);y++)for(let x=cx;x<Math.min(w-16,cx+C);x++)if(R[y*w+x]>m){m=R[y*w+x];mi=y*w+x;}if(mi>=0)pts.push([m,mi%w,(mi/w)|0]);}
+ pts.sort((a,b)=>b[0]-a[0]);const sel=pts.slice(0,N).filter(p=>p[0]>pts[0][0]*0.01);
+ const xy=new Float32Array(sel.length*2),d=new Uint32Array(sel.length*8);
+ sel.forEach((p,k)=>{xy[2*k]=p[1];xy[2*k+1]=p[2];for(let i=0;i<256;i++){const a=b[(p[2]+P[4*i+1])*w+p[1]+P[4*i]],c=b[(p[2]+P[4*i+3])*w+p[1]+P[4*i+2]];if(a<c)d[k*8+(i>>5)]|=1<<(i&31);}});
+ return {n:sel.length,xy,d};}
+function pc(v){v=v-((v>>>1)&0x55555555);v=(v&0x33333333)+((v>>>2)&0x33333333);return(((v+(v>>>4))&0xF0F0F0F)*0x1010101)>>>24;}
+function match(A,B){const m=[];for(let i=0;i<A.n;i++){let b1=999,b2=999,bj=-1;for(let j=0;j<B.n;j++){let s=0;for(let k=0;k<8;k++)s+=pc(A.d[i*8+k]^B.d[j*8+k]);if(s<b1){b2=b1;b1=s;bj=j}else if(s<b2)b2=s;}
+ if(b1<64&&b1<0.8*b2)m.push([i,bj]);}return m;}
+function inliers(A,B,m,tol=5,it=300){if(m.length<3)return 0;let best=0,s=7;const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s%m.length};
+ for(let t=0;t<it;t++){const p=m[rnd()],q=m[rnd()];if(p===q)continue;const ax=A.xy[2*p[0]],ay=A.xy[2*p[0]+1],bx=A.xy[2*q[0]],by=A.xy[2*q[0]+1],ux=B.xy[2*p[1]],uy=B.xy[2*p[1]+1],vx=B.xy[2*q[1]],vy=B.xy[2*q[1]+1];
+  const dx=bx-ax,dy=by-ay,ex=vx-ux,ey=vy-uy,dd=dx*dx+dy*dy;if(dd<100)continue;const a=(dx*ex+dy*ey)/dd,b=(dx*ey-dy*ex)/dd,sc=Math.hypot(a,b);if(sc<0.7||sc>1.4)continue;
+  const tx=ux-(a*ax-b*ay),ty=uy-(b*ax+a*ay);let n=0;for(const r of m){const x=A.xy[2*r[0]],y=A.xy[2*r[0]+1];if(Math.abs(a*x-b*y+tx-B.xy[2*r[1]])<tol&&Math.abs(b*x+a*y+ty-B.xy[2*r[1]+1])<tol)n++;}if(n>best)best=n;}return best;}
+
+
+  const signature = (g, w, h) => features(g, w, h);
+  // distance 0 (same page) .. 1 (different): 1 - agreeing keypoints / 200
+  function distance(A, B) { if (!A || !B || A.n < 3 || B.n < 3) return 1; const m = match(A, B); return 1 - Math.min(1, inliers(A, B, m) / 200); }
+  // walk frames in order; keep sharp frames that differ from ALL kept pages; replace a kept page with a sharper near-duplicate
+  function pickPages(frames, opts = {}) {
+    const sens = opts.sensitivity ?? 0.5, thr = opts.thr ?? (0.7 - 0.4 * sens), sthr = thr, memo = opts.memo || new Map();
+    const D = (i, j) => { const k = i < j ? i * 1e6 + j : j * 1e6 + i; let d = memo.get(k); if (d == null) { d = distance(frames[i].sig, frames[j].sig); memo.set(k, d); } return d; };
+    const sh = frames.map(f => f.sharp), sMin = pct(sh, 0.9) * 0.3;
+    const sharpOk = i => sh[i] >= sMin;
+    // steady = looks like neighbour (not mid-turn)
+    const steady = i => (i > 0 && D(i, i - 1) < sthr) || (i + 1 < frames.length && D(i, i + 1) < sthr);
+    // each kept page tracks its latest matching frame (ref), so slow drift/hand movement on the same page isn't "new"
+    const kept = []; let cand = 0;
+    for (let i = 0; i < frames.length; i++) {
+      if (!sharpOk(i) || !steady(i)) continue; cand++;
+      let bj = -1, bd = 2;
+      for (let k = 0; k < kept.length; k++) { const d = Math.min(D(i, kept[k].ref), D(i, kept[k].idx)); if (d < bd) { bd = d; bj = k; } }
+      if (bj >= 0 && bd < thr) { const k = kept[bj]; k.ref = i; k.n++; if (sh[i] > sh[k.idx]) k.idx = i; continue; }
+      // new page: require a following frame to agree (filters one-off transients mid-turn)
+      let ok = i + 1 >= frames.length; for (let j = i + 1; j < Math.min(frames.length, i + 4); j++) if (D(i, j) < sthr) { ok = true; break; }
+      if (!ok) continue;
+      kept.push({ idx: i, ref: i, n: 1, d: bd > 1 ? null : bd }); }
+    // a page must be seen for ~0.5s (minHits steady frames); shorter runs are mid-turn glimpses
+    const minHits = opts.minHits ?? Math.max(2, Math.round((opts.fps || 6) * 0.5)), brief = kept.filter(k => k.n < minHits).length;
+    if (kept.some(k => k.n >= minHits)) for (let k = kept.length - 1; k >= 0; k--) if (kept[k].n < minHits) kept.splice(k, 1);
+    const dists = kept.map(k => k.d);
+    if (!kept.length && frames.length) { let b = 0; sh.forEach((s, i) => { if (s > sh[b]) b = i; }); kept.push({ idx: b, d: null }); }
+    kept.sort((a, b) => a.idx - b.idx);
+    return { pages: kept.map(k => ({ idx: k.idx })), stats: { sampled: frames.length, candidates: cand, brief, kept: kept.length, thr, dists }, memo, candidates: frames.map((f, i) => i).filter(i => sharpOk(i) && steady(i)) };
   }
-  root.ScanCore = { choose, occlusion, skinGate, candidates, pct, thumb, gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 64, SH: 64 };
+  root.ScanCore = { pickPages, distance, signature, pct, thumb, gray, sharpness, diff, detectQuad, warp, enhance, SW: 64, SH: 64 };
   if (typeof module !== 'undefined') module.exports = root.ScanCore;
 })(typeof self !== 'undefined' ? self : globalThis);

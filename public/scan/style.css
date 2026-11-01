@@ -15,4 +15,3 @@ progress{width:100%;height:12px;accent-color:var(--ac)}#status{color:var(--mut);
 #viewer img{flex:1;min-height:0;object-fit:contain;width:100%}#viewer .row{padding:0 12px}
 #scrub{display:none;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px}#scrub video{width:100%;max-height:50vh;background:#000;border-radius:8px}#scrub input{width:100%;height:44px;accent-color:var(--ac)}
 .hide{display:none!important}small{color:var(--mut)}
-.badge{background:var(--ac);color:#fff;border-radius:6px;padding:1px 6px;font-size:12px;font-weight:600}

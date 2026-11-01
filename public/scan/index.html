@@ -4,10 +4,10 @@
 <link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Scan">
-<meta name="theme-color" content="#fbf8f3"><link rel="stylesheet" href="style.css?v=5"></head><body><main>
+<meta name="theme-color" content="#fbf8f3"><link rel="stylesheet" href="style.css?v=6"></head><body><main>
 <h1>Page Scanner</h1><p class="sub">Record yourself flipping through pages. Hold each page still for about a second. Everything stays on your phone.</p>
 <label class="btn primary" style="width:100%">Choose video from library<input id="pick" type="file" accept="video/*"></label>
-<p class="sub" style="margin:8px 0">Best quality: record in the Camera app, then choose it here.<br>For best results, flip a page then move your hand fully out of frame for ~1 second.</p>
+<p class="sub" style="margin:8px 0">Best quality: record in the Camera app, then choose it here.<br>Hold each page steady for about half a second after turning it.</p>
 <label class="btn" style="width:100%">Record video<input id="rec" type="file" accept="video/*" capture="environment"></label>
 <div id="prog" class="hide"><div id="status">Working…</div><progress id="bar" max="1" value="0"></progress><div id="debug"><small id="dbg"></small></div></div>
 <div id="tools" class="hide">
@@ -24,4 +24,4 @@
 <video id="v" playsinline webkit-playsinline muted preload="auto" style="position:fixed;left:0;bottom:0;width:2px;height:2px;opacity:.01;pointer-events:none"></video>
 <div id="viewer"><img id="vimg" alt=""><div class="row"><button class="btn" id="vshare">Save / Share</button><button class="btn primary" id="vclose">Close</button></div></div>
 <p><small>Tip: tap Share → “Save Image” to put pages in Photos. Add to Home Screen from Safari’s share menu.</small></p>
-</main><script src="core.js?v=5"></script><script src="vendor/jspdf.umd.min.js"></script><script src="app.js?v=5"></script></body></html>
+</main><script src="core.js?v=6"></script><script src="vendor/jspdf.umd.min.js"></script><script src="app.js?v=6"></script></body></html>
