@@ -20,16 +20,35 @@
     const m = s / n; return s2 / n - m * m;
   }
   function diff(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += Math.abs(a[i] - b[i]); return s / a.length; }
-  // skin + dark-intrusion fractions on a small RGBA ImageData (central 80% region)
+  // skin fraction over the WHOLE frame plus a 6x6 grid of per-block skin fractions (hands enter from edges)
+  function isSkin(r, g, b) { const Y = 0.299 * r + 0.587 * g + 0.114 * b, cb = 128 - 0.1687 * r - 0.3313 * g + 0.5 * b, cr = 128 + 0.5 * r - 0.4187 * g - 0.0813 * b;
+    return cr > 135 && cr < 180 && cb > 75 && cb < 128 && Y > 45 && r > g && r > b && r - b > 15; }
   function occlusion(img) {
-    const w = img.width, h = img.height, d = img.data; let skin = 0, dark = 0, n = 0;
-    for (let y = Math.floor(h * 0.1); y < h * 0.9; y++) for (let x = Math.floor(w * 0.1); x < w * 0.9; x++) {
-      const i = (y * w + x) * 4, r = d[i], g = d[i + 1], b = d[i + 2];
-      const Y = 0.299 * r + 0.587 * g + 0.114 * b, cb = 128 - 0.1687 * r - 0.3313 * g + 0.5 * b, cr = 128 + 0.5 * r - 0.4187 * g - 0.0813 * b;
-      if (cr > 138 && cr < 178 && cb > 77 && cb < 125 && Y > 50 && r > g && r > b) skin++;
-      if (Y < 60) dark++; n++; }
-    return { skin: skin / n, dark: dark / n };
+    const w = img.width, h = img.height, d = img.data, G = 6, blk = new Float32Array(G * G), cnt = new Float32Array(G * G); let skin = 0, dark = 0, n = 0;
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = (y * w + x) * 4, k = Math.min(G - 1, (y * G / h) | 0) * G + Math.min(G - 1, (x * G / w) | 0);
+      const s = isSkin(d[i], d[i + 1], d[i + 2]); if (s) { skin++; blk[k]++; } cnt[k]++;
+      if (0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2] < 60) dark++; n++; }
+    for (let k = 0; k < blk.length; k++) blk[k] /= cnt[k] || 1;
+    return { skin: skin / n, dark: dark / n, blocks: blk };
   }
+  // per-video adaptive skin gate: marks f.skinHand = true when skin clearly exceeds this video's baseline
+  // baseline comes only from low-motion frames (page turns shift the page and would skew it)
+  function skinGate(frames, diffs, still) {
+    if (!frames.length) return 0; const nb = frames[0].blocks ? frames[0].blocks.length : 0;
+    let ref = diffs ? frames.filter((f, i) => diffs[i] < still) : frames; if (ref.length < 3) ref = frames;
+    const base = pct(ref.map(f => f.skin || 0), 0.1), bb = [];
+    for (let k = 0; k < nb; k++) bb.push(pct(ref.map(f => f.blocks[k]), 0.1));
+    let c = 0;
+    for (const f of frames) { let hand = (f.skin || 0) > base + 0.012;
+      for (let k = 0; k < nb && !hand; k++) if (f.blocks[k] - bb[k] > 0.18) hand = true;
+      f.skinHand = hand; if (hand) c++; }
+    return c;
+  }
+  // candidates in a stretch: low motion + skin-gate pass, sharpest first
+  function candidates(frames, seg, diffs, lim) {
+    if (lim == null || !isFinite(lim)) lim = Infinity;
+    return seg.filter(i => !frames[i].skinHand && diffs[i] < lim && (diffs[i + 1] == null || diffs[i + 1] < lim))
+      .sort((a, b) => frames[b].sharp - frames[a].sharp); }
   function pct(arr, p) { const s = arr.slice().sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))] || 0; }
   // frames: [{t, sharp, g, skin, dark}]. sensitivity 0..1 (higher = more pages)
   function segment(frames, opts = {}) {
@@ -71,7 +90,7 @@
     // no image-similarity merge: different text pages look alike at thumbnail scale under handshake
     const out = picks.slice();
     if (!out.length) out.push(pickOf(frames.map((_, i) => i)));
-    return { picks: out.map(i => ({ idx: i, t: frames[i].t, sharp: frames[i].sharp })), diffs: d, thr, segs: segs.length, lo, hi };
+    return { segments: segs, picks: out.map(i => ({ idx: i, t: frames[i].t, sharp: frames[i].sharp })), diffs: d, thr, segs: segs.length, lo, hi, still: hi - lo < 1.5 ? Infinity : lo + (hi - lo) * 0.3 };
   }
   // ---- quad detection: largest bright blob, corners by extremes ----
   function detectQuad(img) {
@@ -156,6 +175,6 @@
         out[i + 3] = 255; } }
     return { data: out, width: W, height: H };
   }
-  root.ScanCore = { occlusion, thumb, gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 64, SH: 64 };
+  root.ScanCore = { occlusion, skinGate, candidates, pct, thumb, gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 64, SH: 64 };
   if (typeof module !== 'undefined') module.exports = root.ScanCore;
 })(typeof self !== 'undefined' ? self : globalThis);

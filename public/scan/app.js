@@ -22,7 +22,7 @@ const small = document.createElement('canvas'), sx = small.getContext('2d', { wi
 function sample(video, t) { // compute stats for current frame
   sx.drawImage(video, 0, 0, small.width, small.height); const id = sx.getImageData(0, 0, small.width, small.height);
   const g = C.gray(id, small.width, small.height), o = C.occlusion(id);
-  const f = { t, sharp: C.sharpness(g, small.width, small.height), g: C.thumb(g, small.width, small.height, C.SW, C.SH), skin: o.skin, dark: o.dark, blob: null };
+  const f = { t, sharp: C.sharpness(g, small.width, small.height), g: C.thumb(g, small.width, small.height, C.SW, C.SH), skin: o.skin, dark: o.dark, blocks: o.blocks, blob: null };
   const bc = grab(video, BACKUP); bc.toBlob(b => f.blob = b, 'image/jpeg', 0.92); return f; }
 
 async function decodePlay(onp) { // play-and-sample via requestVideoFrameCallback (reliable on iOS)
@@ -57,12 +57,36 @@ function makePage(frame, t) { const q = C.detectQuad(frame); const flat = q ? C.
 function render(p) { if (!p.out[mode]) p.out[mode] = toCanvas(C.enhance(p.flat, mode)).toDataURL('image/jpeg', 0.9); return p.out[mode]; }
 
 const st = $('#status'), bar = $('#bar'), dbg = $('#dbg');
-async function buildPages() { const r = C.segment(frames, { sensitivity: +$('#sens').value, fps: FPS }); const np = [];
-  for (let k = 0; k < r.picks.length; k++) { st.textContent = `Cleaning page ${k + 1}/${r.picks.length}`; const f = frames[r.picks[k].idx];
-    if (!cache.has(f)) { cache.set(f, makePage(imgData(await frameCanvas(f)), f.t)); } np.push(cache.get(f));
-    render(np[k]); bar.value = 0.7 + 0.3 * (k + 1) / r.picks.length; await sleep(0); }
-  pages = np; st.textContent = `Found ${pages.length} page${pages.length === 1 ? '' : 's'}.`; bar.value = 1;
-  dbg.textContent = `${meta.dur.toFixed(1)}s ${meta.w}×${meta.h} · ${frames.length} frames sampled via ${meta.how}${meta.stuck ? ` (${meta.stuck} stuck)` : ''} · ${r.segs} segments · motion lo ${r.lo.toFixed(1)} / hi ${r.hi.toFixed(1)} / thr ${isFinite(r.thr) ? r.thr.toFixed(1) : '∞'} · picks @ ${r.picks.map(p => p.t.toFixed(1)).join(', ')}s`;
+// ---- on-device hand detector (MediaPipe HandLandmarker, vendored) ----
+let hl = null, hlTried = false, hlErr = '';
+async function handModel() { if (hlTried) return hl; hlTried = true;
+  try { const base = new URL('vendor/mediapipe/', location.href).href, mp = await import(base + 'vision_bundle.mjs');
+    hl = await mp.HandLandmarker.createFromOptions({ wasmLoaderPath: base + 'vision_wasm_internal.js', wasmBinaryPath: base + 'vision_wasm_internal.wasm' },
+      { baseOptions: { modelAssetPath: base + 'hand_landmarker.task', delegate: 'CPU' }, runningMode: 'IMAGE', numHands: 2,
+        minHandDetectionConfidence: 0.3, minHandPresenceConfidence: 0.3, minTrackingConfidence: 0.3 });
+  } catch (e) { hl = null; hlErr = String(e.message || e).slice(0, 80); } return hl; }
+async function frameBitmap(f) { for (let i = 0; i < 60 && !f.blob; i++) await sleep(50); return f.blob ? createImageBitmap(f.blob) : null; }
+async function hasHand(f) { if (f.mp != null) return f.mp; const m = await handModel(); if (!m) return (f.mp = false);
+  const bm = await frameBitmap(f); if (!bm) return (f.mp = false);
+  try { const r = m.detect(bm); f.mp = !!(r.landmarks && r.landmarks.length); } catch (e) { f.mp = false; } return f.mp; }
+
+let handPages = [];
+async function buildPages() { const r = C.segment(frames, { sensitivity: +$('#sens').value, fps: FPS });
+  const skinRej = C.skinGate(frames, r.diffs, r.still); st.textContent = 'Loading hand detector…'; await handModel();
+  const keep = [], hand = []; let mpRej = 0;
+  for (let k = 0; k < r.segments.length; k++) { const seg = r.segments[k]; st.textContent = `Checking for hands ${k + 1}/${r.segments.length}`;
+    let pick = null; const cand = C.candidates(frames, seg, r.diffs, r.still);
+    for (const i of cand.slice(0, 8)) { const had = frames[i].mp; if (!(await hasHand(frames[i]))) { pick = i; break; } if (had == null) mpRej++; }
+    if (pick != null) keep.push(pick); else hand.push(seg.reduce((b, i) => frames[i].sharp > frames[b].sharp ? i : b, seg[0]));
+    bar.value = 0.7 + 0.15 * (k + 1) / r.segments.length; }
+  const toPage = async (i, k, n) => { const f = frames[i]; st.textContent = `Cleaning page ${k + 1}/${n}`;
+    if (!cache.has(f)) cache.set(f, makePage(imgData(await frameCanvas(f)), f.t)); const p = cache.get(f); render(p); await sleep(0); return p; };
+  const np = []; for (let k = 0; k < keep.length; k++) { np.push(await toPage(keep[k], k, keep.length)); bar.value = 0.85 + 0.15 * (k + 1) / keep.length; }
+  const hp = []; for (let k = 0; k < hand.length; k++) hp.push(await toPage(hand[k], k, hand.length));
+  pages = np; handPages = hp; bar.value = 1;
+  st.textContent = `Found ${pages.length} hand-free page${pages.length === 1 ? '' : 's'}` + (hp.length ? `, ${hp.length} skipped (hand in every frame)` : '') + '.';
+  const mpTotal = frames.filter(f => f.mp).length;
+  dbg.textContent = `${meta.dur.toFixed(1)}s ${meta.w}×${meta.h} · ${frames.length} frames via ${meta.how}${meta.stuck ? ` (${meta.stuck} stuck)` : ''} · ${r.segs} segments · hand-rejected: ${skinRej} by skin, ${mpTotal} by detector${hl ? '' : ' (detector unavailable: ' + hlErr + ')'} · motion lo ${r.lo.toFixed(1)}/hi ${r.hi.toFixed(1)}/thr ${isFinite(r.thr) ? r.thr.toFixed(1) : '∞'} · kept @ ${keep.map(i => frames[i].t.toFixed(1)).join(', ')}s`;
   $('#tools').classList.remove('hide'); draw(); }
 
 async function handle(e) { const f = e.target.files[0]; if (!f) return; e.target.value = '';
@@ -93,7 +117,12 @@ function draw() { const g = $('#grid'); g.innerHTML = '';
       else if (a === 'dn' && i < pages.length - 1) [pages[i + 1], pages[i]] = [pages[i], pages[i + 1]];
       else if (a === 'sh') return share([i]);
       draw(); });
-    g.appendChild(d); }); }
+    g.appendChild(d); });
+  const hs = $('#handSec'); hs.classList.toggle('hide', !handPages.length); $('#handN').textContent = handPages.length; const hg = $('#handGrid'); hg.innerHTML = '';
+  handPages.forEach((p, i) => { const d = document.createElement('div'); d.className = 'card';
+    d.innerHTML = `<img src="${render(p)}" alt="Skipped page"><div class="n">${p.t.toFixed(1)}s · hand</div><div class="acts"><button class="btn sm">Restore</button></div>`;
+    d.querySelector('button').onclick = () => { handPages.splice(i, 1); let at = pages.findIndex(q => q.t > p.t); if (at < 0) at = pages.length; pages.splice(at, 0, p); draw(); };
+    hg.appendChild(d); }); }
 $('#mode').onclick = e => { const m = e.target.dataset.m; if (!m) return; mode = m;
   $('#mode').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === m)); draw(); };
 $('#vclose').onclick = () => $('#viewer').style.display = 'none';
@@ -102,7 +131,22 @@ async function fileFor(i) { const b = await (await fetch(render(pages[i]))).blob
 function download(blob, name) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); }
 async function share(idx) { const files = await Promise.all(idx.map(fileFor));
   if (navigator.canShare && navigator.canShare({ files })) { try { await navigator.share({ files }); } catch (e) {} } else files.forEach(f => download(f, f.name)); }
-$('#shareAll').onclick = () => share(pages.map((_, i) => i));
+$('#shareAll').onclick = async () => { const files = await Promise.all(pages.map((_, i) => fileFor(i)));
+  if (files.length && navigator.canShare && navigator.canShare({ files })) { try { await navigator.share({ files }); return; } catch (e) { if (e.name === 'AbortError') return; } }
+  zipDownload(files); };
+$('#zip').onclick = async () => zipDownload(await Promise.all(pages.map((_, i) => fileFor(i))));
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = b => { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+async function zipDownload(files) { if (!files.length) return; const parts = [], cen = []; let off = 0; const enc = new TextEncoder();
+  for (const f of files) { const data = new Uint8Array(await f.arrayBuffer()), name = enc.encode(f.name), crc = crc32(data);
+    const h = new DataView(new ArrayBuffer(30)); h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint32(14, crc, true); h.setUint32(18, data.length, true); h.setUint32(22, data.length, true); h.setUint16(26, name.length, true);
+    parts.push(h.buffer, name, data);
+    const c = new DataView(new ArrayBuffer(46)); c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, name.length, true); c.setUint32(42, off, true);
+    cen.push(c.buffer, name); off += 30 + name.length + data.length; }
+  const csize = cen.reduce((s, b) => s + (b.byteLength || b.length), 0), e = new DataView(new ArrayBuffer(22));
+  e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, csize, true); e.setUint32(16, off, true);
+  download(new Blob([...parts, ...cen, e.buffer], { type: 'application/zip' }), 'scan-pages.zip'); }
+if (typeof module !== 'undefined') module.exports = { zipDownload };
 $('#pdf').onclick = async () => { if (!pages.length) return; const { jsPDF } = window.jspdf; let doc;
   for (const p of pages) { const src = render(p), im = new Image(); im.src = src; await im.decode();
     const w = im.naturalWidth, h = im.naturalHeight, o = w > h ? 'l' : 'p';
