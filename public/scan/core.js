@@ -7,6 +7,11 @@
         g[y * w + x] = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2]; } }
     return g;
   }
+  function thumb(g, w, h, tw, th) { // area-average downsample of a gray buffer
+    const o = new Float32Array(tw * th), c = new Float32Array(tw * th);
+    for (let y = 0; y < h; y++) { const ty = Math.min(th - 1, (y * th / h) | 0);
+      for (let x = 0; x < w; x++) { const k = ty * tw + Math.min(tw - 1, (x * tw / w) | 0); o[k] += g[y * w + x]; c[k]++; } }
+    for (let i = 0; i < o.length; i++) o[i] /= c[i] || 1; return o; }
   function sharpness(g, w, h) { // Laplacian variance
     let s = 0, s2 = 0, n = 0;
     for (let y = 1; y < h - 1; y++) for (let x = 1; x < w - 1; x++) {
@@ -15,28 +20,58 @@
     const m = s / n; return s2 / n - m * m;
   }
   function diff(a, b) { let s = 0; for (let i = 0; i < a.length; i++) s += Math.abs(a[i] - b[i]); return s / a.length; }
-  // frames: [{t, sharp, g}] with g = small grayscale (same size). Returns [{t, sharp, idx}]
+  // skin + dark-intrusion fractions on a small RGBA ImageData (central 80% region)
+  function occlusion(img) {
+    const w = img.width, h = img.height, d = img.data; let skin = 0, dark = 0, n = 0;
+    for (let y = Math.floor(h * 0.1); y < h * 0.9; y++) for (let x = Math.floor(w * 0.1); x < w * 0.9; x++) {
+      const i = (y * w + x) * 4, r = d[i], g = d[i + 1], b = d[i + 2];
+      const Y = 0.299 * r + 0.587 * g + 0.114 * b, cb = 128 - 0.1687 * r - 0.3313 * g + 0.5 * b, cr = 128 + 0.5 * r - 0.4187 * g - 0.0813 * b;
+      if (cr > 138 && cr < 178 && cb > 77 && cb < 125 && Y > 50 && r > g && r > b) skin++;
+      if (Y < 60) dark++; n++; }
+    return { skin: skin / n, dark: dark / n };
+  }
+  function pct(arr, p) { const s = arr.slice().sort((a, b) => a - b); return s[Math.min(s.length - 1, Math.max(0, Math.floor(p * (s.length - 1))))] || 0; }
+  // frames: [{t, sharp, g, skin, dark}]. sensitivity 0..1 (higher = more pages)
   function segment(frames, opts = {}) {
-    const n = frames.length; if (!n) return [];
-    const d = [0]; for (let i = 1; i < n; i++) d.push(diff(frames[i].g, frames[i - 1].g));
-    const sorted = d.slice(1).sort((a, b) => a - b), med = sorted[Math.floor(sorted.length / 2)] || 0;
-    const thr = opts.motionThr || Math.max(2.5, med * 2.5);
-    const minLen = opts.minLen || 2;
-    const runs = []; let cur = null;
-    for (let i = 0; i < n; i++) {
-      const still = i === 0 ? (n > 1 ? d[1] < thr : true) : d[i] < thr;
-      if (still) { if (!cur) cur = []; cur.push(i); } else { if (cur) runs.push(cur); cur = null; }
+    const n = frames.length; if (!n) return { picks: [], diffs: [], thr: 0, segs: 0 };
+    const sens = opts.sensitivity == null ? 0.5 : opts.sensitivity;
+    const raw = [0]; for (let i = 1; i < n; i++) raw.push(diff(frames[i].g, frames[i - 1].g));
+    raw[0] = raw[1] || 0;
+    const d = raw.map((_, i) => (raw[Math.max(0, i - 1)] + 2 * raw[i] + raw[Math.min(n - 1, i + 1)]) / 4); // smooth
+    const lo = pct(d, 0.25), hi = pct(d, 0.95), mx = Math.max(...d);
+    // adaptive threshold between the typical "hold" jitter and turn peaks
+    const frac = 0.55 - 0.4 * sens; // sens 0 -> 0.55, 1 -> 0.15
+    let thr = Math.max(lo * 1.5 + 0.5, lo + (hi - lo) * frac);
+    if (hi - lo < 1.5) thr = Infinity; // no real motion: single page
+    const fps = opts.fps || 6, minLen = Math.max(2, Math.round(fps * 0.3));
+    let segs = []; let cur = [];
+    for (let i = 0; i < n; i++) { if (d[i] < thr) cur.push(i); else { if (cur.length) segs.push(cur); cur = []; } }
+    if (cur.length) segs.push(cur);
+    segs = segs.filter(r => r.length >= minLen);
+    // fallback: too few segments but clear peaks -> split by motion peaks
+    const dur = (frames[n - 1].t - frames[0].t);
+    if (segs.length <= 1 && dur > 3 && mx > lo * 2 + 1) {
+      const pthr = lo + (mx - lo) * (0.5 - 0.35 * sens), gap = Math.round(fps * 0.8), peaks = [];
+      for (let i = 1; i < n - 1; i++) if (d[i] >= pthr && d[i] >= d[i - 1] && d[i] >= d[i + 1]) {
+        if (peaks.length && i - peaks[peaks.length - 1] < gap) { if (d[i] > d[peaks[peaks.length - 1]]) peaks[peaks.length - 1] = i; } else peaks.push(i); }
+      if (peaks.length) { segs = []; let s0 = 0;
+        for (const p of [...peaks, n]) { const seg = []; for (let i = s0; i < p; i++) if (Math.abs(i - p) > 1 && (s0 === 0 || i - s0 > 1)) seg.push(i);
+          if (seg.length >= 1) segs.push(seg); s0 = p + 1; } }
     }
-    if (cur) runs.push(cur);
-    let picks = runs.filter(r => r.length >= minLen).map(r => r.reduce((b, i) => frames[i].sharp > frames[b].sharp ? i : b, r[0]));
-    // merge consecutive picks that show the same page (pause mid-turn)
-    const same = opts.sameThr || Math.max(6, thr * 2), out = [];
-    for (const p of picks) {
-      const last = out[out.length - 1];
-      if (last != null && diff(frames[p].g, frames[last].g) < same) { if (frames[p].sharp > frames[last].sharp) out[out.length - 1] = p; }
-      else out.push(p);
-    }
-    return { picks: out.map(i => ({ idx: i, t: frames[i].t, sharp: frames[i].sharp })), diffs: d, thr };
+    const pickOf = seg => {
+      const minOcc = Math.min(...seg.map(i => (frames[i].skin || 0) + 0.5 * (frames[i].dark || 0)));
+      const maxS = Math.max(...seg.map(i => frames[i].sharp)) || 1;
+      let best = seg[0], bs = -Infinity;
+      seg.forEach((i, k) => { const occ = (frames[i].skin || 0) + 0.5 * (frames[i].dark || 0) - minOcc;
+        const pos = seg.length > 1 ? k / (seg.length - 1) : 1;
+        const s = frames[i].sharp / maxS + 0.25 * pos - 25 * occ; // occlusion dominates
+        if (s > bs) { bs = s; best = i; } });
+      return best; };
+    let picks = segs.map(pickOf);
+    // no image-similarity merge: different text pages look alike at thumbnail scale under handshake
+    const out = picks.slice();
+    if (!out.length) out.push(pickOf(frames.map((_, i) => i)));
+    return { picks: out.map(i => ({ idx: i, t: frames[i].t, sharp: frames[i].sharp })), diffs: d, thr, segs: segs.length, lo, hi };
   }
   // ---- quad detection: largest bright blob, corners by extremes ----
   function detectQuad(img) {
@@ -121,6 +156,6 @@
         out[i + 3] = 255; } }
     return { data: out, width: W, height: H };
   }
-  root.ScanCore = { gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 96, SH: 96 };
+  root.ScanCore = { occlusion, thumb, gray, sharpness, diff, segment, detectQuad, warp, enhance, SW: 64, SH: 64 };
   if (typeof module !== 'undefined') module.exports = root.ScanCore;
 })(typeof self !== 'undefined' ? self : globalThis);
