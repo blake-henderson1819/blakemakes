@@ -1,0 +1,10 @@
+.lb-zoom{cursor:zoom-in}
+.lb{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;cursor:zoom-out;transition:none;animation:none}
+.lb[hidden]{display:none}
+.lb__fig{margin:0;display:flex;flex-direction:column;align-items:center}
+.lb__img{max-width:95vw;max-height:90vh;width:auto;height:auto;object-fit:contain;display:block}
+.lb__cap{color:#eee;font-size:.9rem;margin-top:.5rem;max-width:95vw;text-align:center}
+.lb__close{position:fixed;top:.5rem;right:.75rem;background:none;border:0;color:#fff;font-size:2.25rem;line-height:1;cursor:pointer;padding:.25rem .5rem}
+.lb__close:focus-visible{outline:2px solid #d9480f}
+.project__repo{margin:.5rem 0 0;font-size:.85rem}
+.project__repo a{color:#d9480f}

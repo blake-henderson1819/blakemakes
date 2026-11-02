@@ -8,6 +8,7 @@ layout: base.njk
     <p class="spec"><span>BH-{{ idx | pad }}</span><span>{{ page.date | monthYear }}</span>{% for t in tags %}{% if t != "projects" %}<span>{{ t }}</span>{% endif %}{% endfor %}</p>
     <h1>{{ title }}</h1>
     <p class="lede">{{ summary }}</p>
+    {% if repo %}<p class="spec project__repo"><a href="{{ repo }}">View code on GitHub →</a></p>{% endif %}
   </header>
   {% if video %}
   <figure class="project__video">
@@ -21,3 +22,4 @@ layout: base.njk
   </div>
   <nav class="project__back" aria-label="Project navigation"><a href="/#projects">← All projects</a></nav>
 </article>
+{% include "lightbox.njk" %}

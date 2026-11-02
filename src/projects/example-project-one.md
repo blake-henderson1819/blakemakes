@@ -2,6 +2,7 @@
 # PLACEHOLDER TEMPLATE — copy this file, rename it, and replace every [PLACEHOLDER].
 title: "Combat Robot"
 date: 2026-09-01
+repo: https://github.com/blake-henderson1819/exterminate
 summary: "Computer vision autonomous combat robot."
 cover: /images/projects/example-project-one/robot-assembled.webp
 video: ""            # e.g. /images/projects/example-project-one/demo.mp4 or a YouTube embed URL
