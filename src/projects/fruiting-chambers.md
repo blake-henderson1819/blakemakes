@@ -29,5 +29,6 @@ I built custom fruiting chambers for my role in a mycology lab. The lab was stru
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/fruiting-chambers/group.webp" alt="The group in the prep room" width="1600" height="1200" loading="lazy" style="margin:0">
+<figcaption>Mycology club cultivation workshop participants after culturing their first mycelial tissue on agar plates.</figcaption>
 </figure>
 
