@@ -20,6 +20,7 @@ I built custom fruiting chambers for my role in a mycology lab. The lab was stru
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/fruiting-chambers/oysters-fruiting.webp" alt="Oyster mushrooms fruiting from blocks inside a chamber, seen through the door" width="1600" height="1200" loading="lazy" style="margin:0">
+<figcaption>Mycology club members harvesting their first mushrooms out of the fruiting chamber.</figcaption>
 </figure>
 
 <figure style="margin:1.5rem 0">
