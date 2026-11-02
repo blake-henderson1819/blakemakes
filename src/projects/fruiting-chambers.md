@@ -10,7 +10,7 @@ tags: [fabrication, controls]
 
 ## What I built
 
-[PLACEHOLDER: what these chambers are, how they regulate temperature and humidity, and your role]
+I built custom fruiting chambers for my role in a mycology lab. The lab was struggling with heat, humidity, and CO2 fluctuations that were hurting its yields. The chambers use sensors and fans to regulate the key parameters for mushroom growth. After they went in, the lab saw an increase of over 40% in mushroom fruiting weight.
 
 ## Photos
 
