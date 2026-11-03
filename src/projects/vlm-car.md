@@ -3,6 +3,8 @@ title: "VLM Car"
 date: 2026-10-14
 summary: "A small Arduino robot car I drive by talking to it, guided by an overhead webcam."
 repo: https://github.com/blake-henderson1819/vlm-car
+cover: /images/projects/vlm-car/cover.webp
+hideCover: true
 pinned: false
 featured: false
 tags: [arduino, computer-vision, voice]
