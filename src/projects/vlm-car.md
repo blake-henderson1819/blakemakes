@@ -8,7 +8,7 @@ featured: false
 tags: [arduino, computer-vision, voice]
 ---
 
-<p class="ph">[PLACEHOLDER: photos or demo video]</p>
+<div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem;max-width:720px"><iframe src="https://www.youtube.com/embed/Yh9-R5hkVOY?iv_load_policy=3&amp;rel=0" title="VLM Car demo" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
 A small Arduino Uno robot car with an L293D motor driver and two TT gear motors. A Logitech webcam mounted over my table watches from above and finds the car by an ArUco marker on its roof.
 
