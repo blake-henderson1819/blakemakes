@@ -1,0 +1,16 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Text to speech</title>
+<style>body{font:17px/1.5 system-ui,sans-serif;background:#fbfaf7;color:#1a1a1a;max-width:640px;margin:0 auto;padding:1.25rem}h1{font-size:1.4rem}textarea{width:100%;box-sizing:border-box;min-height:10rem;font:inherit;padding:.6rem;border:1px solid #1a1a1a}label{display:block;margin:.8rem 0 .2rem}select,input{width:100%;font:inherit}.row{display:flex;gap:.6rem;margin-top:1rem}button{flex:1;font:inherit;padding:.7rem;border:1px solid #1a1a1a;background:#fff}button.go{background:#d9480f;color:#fff;border-color:#d9480f}</style></head><body>
+<h1>Text to speech</h1>
+<textarea id="t" placeholder="Type something…"></textarea>
+<label for="v">Voice</label><select id="v"></select>
+<label for="r">Speed <span id="rv">1.0</span></label><input id="r" type="range" min="0.5" max="2" step="0.1" value="1">
+<label for="p">Pitch <span id="pv">1.0</span></label><input id="p" type="range" min="0" max="2" step="0.1" value="1">
+<div class="row"><button class="go" id="s">Speak</button><button id="x">Stop</button></div>
+<script>
+const S=speechSynthesis,$=i=>document.getElementById(i);let V=[];
+function load(){V=S.getVoices();$('v').innerHTML=V.map((v,i)=>`<option value="${i}">${v.name} (${v.lang})</option>`).join('');const d=V.findIndex(v=>v.default&&/^en/.test(v.lang));if(d>=0)$('v').value=d}
+load();S.onvoiceschanged=load;
+['r','p'].forEach(k=>$(k).oninput=()=>$(k+'v').textContent=(+$(k).value).toFixed(1));
+$('s').onclick=()=>{S.cancel();const u=new SpeechSynthesisUtterance($('t').value);if(V[$('v').value])u.voice=V[$('v').value];u.rate=+$('r').value;u.pitch=+$('p').value;S.speak(u)};
+$('x').onclick=()=>S.cancel();
+</script></body></html>
