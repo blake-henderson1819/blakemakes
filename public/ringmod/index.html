@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ring Mod</title>
+<style>body{font-family:-apple-system,sans-serif;background:#111;color:#eee;padding:20px;max-width:480px;margin:auto}
+button{font-size:20px;padding:14px;width:100%;margin:8px 0;border-radius:12px;border:0;background:#c0392b;color:#fff}
+label{display:block;margin-top:18px}input{width:100%}</style></head><body>
+<h1>Ring Mod</h1><p>Use headphones to avoid feedback.</p>
+<button id="go">Start mic</button>
+<label>Carrier frequency: <span id="fv">30</span> Hz<input id="f" type="range" min="1" max="1000" value="30"></label>
+<label>Mix (wet): <span id="mv">100</span>%<input id="m" type="range" min="0" max="100" value="100"></label>
+<label>Volume<input id="v" type="range" min="0" max="200" value="100"></label>
+<button id="rec" disabled>Record</button><audio id="out" controls style="width:100%"></audio>
+<script>
+let ctx,osc,ringGain,wet,dry,vol,rec,chunks=[];const $=id=>document.getElementById(id);
+$('go').onclick=async()=>{if(ctx){ctx.close();ctx=null;$('go').textContent='Start mic';$('rec').disabled=true;return}
+ctx=new AudioContext();const s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false}});
+const src=ctx.createMediaStreamSource(s);ringGain=ctx.createGain();ringGain.gain.value=0;
+osc=ctx.createOscillator();osc.frequency.value=+$('f').value;osc.connect(ringGain.gain);osc.start();
+wet=ctx.createGain();dry=ctx.createGain();vol=ctx.createGain();
+src.connect(ringGain).connect(wet).connect(vol);src.connect(dry).connect(vol);vol.connect(ctx.destination);
+const dest=ctx.createMediaStreamDestination();vol.connect(dest);rec=new MediaRecorder(dest.stream);
+rec.ondataavailable=e=>chunks.push(e.data);rec.onstop=()=>{$('out').src=URL.createObjectURL(new Blob(chunks,{type:rec.mimeType}));chunks=[]};
+upd();$('go').textContent='Stop';$('rec').disabled=false};
+$('rec').onclick=()=>{if(rec.state==='recording'){rec.stop();$('rec').textContent='Record'}else{rec.start();$('rec').textContent='Stop recording'}};
+function upd(){$('fv').textContent=$('f').value;$('mv').textContent=$('m').value;if(!ctx)return;
+osc.frequency.value=+$('f').value;const w=$('m').value/100;wet.gain.value=w;dry.gain.value=1-w;vol.gain.value=$('v').value/100}
+['f','m','v'].forEach(i=>$(i).oninput=upd);
+</script></body></html>
