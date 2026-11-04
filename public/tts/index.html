@@ -1,16 +1,27 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Text to speech</title>
-<style>body{font:17px/1.5 system-ui,sans-serif;background:#fbfaf7;color:#1a1a1a;max-width:640px;margin:0 auto;padding:1.25rem}h1{font-size:1.4rem}textarea{width:100%;box-sizing:border-box;min-height:10rem;font:inherit;padding:.6rem;border:1px solid #1a1a1a}label{display:block;margin:.8rem 0 .2rem}select,input{width:100%;font:inherit}.row{display:flex;gap:.6rem;margin-top:1rem}button{flex:1;font:inherit;padding:.7rem;border:1px solid #1a1a1a;background:#fff}button.go{background:#d9480f;color:#fff;border-color:#d9480f}</style></head><body>
-<h1>Text to speech</h1>
-<textarea id="t" placeholder="Type something…"></textarea>
-<label for="v">Voice</label><select id="v"></select>
-<label for="r">Speed <span id="rv">1.0</span></label><input id="r" type="range" min="0.5" max="2" step="0.1" value="1">
-<label for="p">Pitch <span id="pv">1.0</span></label><input id="p" type="range" min="0" max="2" step="0.1" value="1">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Dalek text to speech</title>
+<style>body{font:17px/1.5 system-ui,sans-serif;background:#fbfaf7;color:#1a1a1a;max-width:640px;margin:0 auto;padding:1.25rem}h1{font-size:1.4rem}textarea{width:100%;box-sizing:border-box;min-height:8rem;font:inherit;padding:.6rem;border:1px solid #1a1a1a}label{display:block;margin:.8rem 0 .2rem}input{width:100%}.row{display:flex;gap:.6rem;margin-top:1rem}button{flex:1;font:inherit;padding:.7rem;border:1px solid #1a1a1a;background:#fff}button.go{background:#d9480f;color:#fff;border-color:#d9480f}</style></head><body>
+<h1>Dalek text to speech</h1>
+<textarea id="t">Exterminate! Exterminate!</textarea>
+<label for="f">Ring frequency <span id="fv">30</span> Hz</label><input id="f" type="range" min="10" max="80" step="1" value="30">
+<label for="sp">Speed <span id="spv">72</span></label><input id="sp" type="range" min="40" max="120" step="1" value="72">
+<label for="pi">Pitch <span id="piv">64</span></label><input id="pi" type="range" min="20" max="120" step="1" value="64">
 <div class="row"><button class="go" id="s">Speak</button><button id="x">Stop</button></div>
+<script src="samjs.min.js"></script>
 <script>
-const S=speechSynthesis,$=i=>document.getElementById(i);let V=[];
-function load(){V=S.getVoices();$('v').innerHTML=V.map((v,i)=>`<option value="${i}">${v.name} (${v.lang})</option>`).join('');const d=V.findIndex(v=>v.default&&/^en/.test(v.lang));if(d>=0)$('v').value=d}
-load();S.onvoiceschanged=load;
-['r','p'].forEach(k=>$(k).oninput=()=>$(k+'v').textContent=(+$(k).value).toFixed(1));
-$('s').onclick=()=>{S.cancel();const u=new SpeechSynthesisUtterance($('t').value);if(V[$('v').value])u.voice=V[$('v').value];u.rate=+$('r').value;u.pitch=+$('p').value;S.speak(u)};
-$('x').onclick=()=>S.cancel();
+const $=i=>document.getElementById(i);let ctx,src;
+['f','sp','pi'].forEach(k=>$(k).oninput=()=>$(k+'v').textContent=$(k).value);
+$('s').onclick=()=>{
+  ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();ctx.resume();
+  if(src)try{src.stop()}catch(e){}
+  const sam=new SamJs({speed:+$('sp').value,pitch:+$('pi').value,mouth:150,throat:110});
+  const txt=$('t').value.trim();if(!txt)return;
+  const raw=sam.buf32(txt);if(!raw)return;
+  const R=22050,fr=+$('f').value,d=Math.round(R*0.008),out=new Float32Array(raw.length+d);
+  for(let n=0;n<raw.length;n++)out[n]=raw[n]*Math.sin(2*Math.PI*fr*n/R);
+  for(let n=out.length-1;n>=d;n--)out[n]+=0.6*out[n-d];
+  let m=0;for(const v of out)m=Math.max(m,Math.abs(v));for(let n=0;n<out.length;n++)out[n]=Math.tanh(2.2*out[n]/(m||1))*0.9;
+  const b=ctx.createBuffer(1,out.length,R);b.copyToChannel?b.copyToChannel(out,0):b.getChannelData(0).set(out);
+  src=ctx.createBufferSource();src.buffer=b;src.connect(ctx.destination);src.start();
+};
+$('x').onclick=()=>{if(src)try{src.stop()}catch(e){}};
 </script></body></html>
