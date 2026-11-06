@@ -26,10 +26,7 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 
 </details>
 
-<figure style="margin:1.5rem 0">
-<img src="/images/projects/example-project-one/coming-soon.webp" alt="First CAD pass of the combat robot" width="1600" height="1000" loading="lazy" style="margin:0">
-<figcaption>First CAD pass</figcaption>
-</figure>
+<div style="position:relative;aspect-ratio:16/9;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/example-project-one/cad-v2.webp" alt="Updated CAD of the combat robot" width="1600" height="939" loading="lazy" style="margin:0">
