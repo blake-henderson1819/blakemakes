@@ -1,0 +1,17 @@
+/* Minimal slideshow — scoped; do not put in style.css */
+.ss{margin:1.5rem 0;border:1px solid var(--ink,#1a1a1a);background:var(--paper,#faf7f2);color:var(--ink,#1a1a1a)}
+.ss__slide{display:none;margin:0}
+.ss__slide.is-active{display:block}
+.ss__media{display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh}
+.ss__slide img.ss__media{border:0}
+.ss__slide video.ss__media{border:0;background:#000}
+.ss__cap{margin:0;padding:.6rem .85rem;font-size:.92rem;line-height:1.4;border-top:1px solid var(--rule,#ccc);color:var(--ink,#1a1a1a)}
+.ss__bar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.45rem .6rem;border-top:1px solid var(--rule,#ccc)}
+.ss__btn{appearance:none;background:transparent;border:1px solid var(--ink,#1a1a1a);color:var(--ink,#1a1a1a);font:inherit;font-size:1.1rem;line-height:1;padding:.25rem .7rem;cursor:pointer}
+.ss__btn:hover,.ss__btn:focus-visible{border-color:#d9480f;color:#d9480f;outline:none}
+.ss__btn:focus-visible{outline:2px solid #d9480f;outline-offset:2px}
+.ss__count{font-variant-numeric:tabular-nums;font-size:.9rem}
+.ss__dots{display:flex;gap:.4rem;justify-content:center;padding:0 .6rem .55rem}
+.ss__dot{appearance:none;width:.65rem;height:.65rem;padding:0;border:1px solid var(--ink,#1a1a1a);border-radius:50%;background:transparent;cursor:pointer}
+.ss__dot[aria-current="true"]{background:#d9480f;border-color:#d9480f}
+.ss__dot:focus-visible{outline:2px solid #d9480f;outline-offset:2px}

@@ -5,7 +5,7 @@ date: 2026-09-01
 repo: https://github.com/blake-henderson1819/exterminate
 summary: "Computer vision autonomous combat robot."
 homeVideo: https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&rel=0
-cover: /images/projects/example-project-one/robot-assembled.webp
+cover: /images/projects/example-project-one/spinner-cut.webp
 video: ""            # e.g. /images/projects/example-project-one/demo.mp4 or a YouTube embed URL
 pinned: true
 featured: true       # the most recent featured project with a video fills the homepage video slot
@@ -30,6 +30,39 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 ## Update · Nov 5, 2026
 
 <div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+
+## Update · Oct 30, 2026
+
+### Machining an upgraded spinner
+
+I cut an upgraded spinner bar out of metal plate on a CNC router. The part is still held in by tabs, with chips piled up from the cut.
+
+<link rel="stylesheet" href="/css/slideshow.css">
+<div class="ss" role="region" aria-roledescription="carousel" aria-label="Machining the upgraded spinner">
+  <div class="ss__slide is-active" data-i="0">
+    <img class="ss__media" src="/images/projects/example-project-one/spinner-cnc.webp" alt="Metal spinner bar freshly cut from plate stock on a CNC router, still held by tabs, with a dust hose and chips on the bed" width="1200" height="1600" loading="lazy">
+    <p class="ss__cap">Spinner still in the plate on the CNC.</p>
+  </div>
+  <div class="ss__slide" data-i="1" hidden aria-hidden="true">
+    <img class="ss__media" src="/images/projects/example-project-one/spinner-cut.webp" alt="Close-up of the cut spinner outline in the metal plate, covered in chips and held by a clamp" width="1600" height="1200" loading="lazy">
+    <p class="ss__cap">Close-up of the cut, chips everywhere.</p>
+  </div>
+  <div class="ss__slide" data-i="2" hidden aria-hidden="true">
+    <video class="ss__media" controls playsinline preload="metadata" poster="/images/projects/example-project-one/spinner-machining-poster.webp" width="1280" height="720" aria-label="Video: cutting the spinner on the CNC"><source src="/images/projects/example-project-one/spinner-machining.mp4" type="video/mp4"></video>
+    <p class="ss__cap">Cutting the spinner.</p>
+  </div>
+  <div class="ss__bar">
+    <button type="button" class="ss__btn ss__prev" aria-label="Previous slide">‹</button>
+    <span class="ss__count" aria-live="polite">1 / 3</span>
+    <button type="button" class="ss__btn ss__next" aria-label="Next slide">›</button>
+  </div>
+  <div class="ss__dots" role="tablist" aria-label="Slides">
+    <button type="button" class="ss__dot" aria-label="Slide 1" aria-current="true"></button>
+    <button type="button" class="ss__dot" aria-label="Slide 2"></button>
+    <button type="button" class="ss__dot" aria-label="Slide 3"></button>
+  </div>
+</div>
+<script src="/js/slideshow.js" defer></script>
 
 ## Update · Oct 29, 2026 · Turn-only person tracking
 
