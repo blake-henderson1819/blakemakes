@@ -40,7 +40,7 @@ I cut an upgraded spinner bar out of metal plate on a CNC router. The part is st
 <div class="ss" role="region" aria-roledescription="carousel" aria-label="Machining the upgraded spinner">
   <div class="ss__slide is-active" data-i="0">
     <img class="ss__media" src="/images/projects/example-project-one/spinner-cnc.webp" alt="Metal spinner bar freshly cut from plate stock on a CNC router, still held by tabs, with a dust hose and chips on the bed" width="1200" height="1600" loading="lazy">
-    <p class="ss__cap">Spinner still in the plate on the CNC.</p>
+    <p class="ss__cap">Machining a more <em>effective</em> spinner on my friend's CNC table</p>
   </div>
   <div class="ss__slide" data-i="1" hidden aria-hidden="true">
     <img class="ss__media" src="/images/projects/example-project-one/spinner-cut.webp" alt="Close-up of the cut spinner outline in the metal plate, covered in chips and held by a clamp" width="1600" height="1200" loading="lazy">
