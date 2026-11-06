@@ -26,30 +26,13 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 
 </details>
 
-<div style="position:relative;aspect-ratio:16/9;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+## Update · Oct 29, 2026 · Turn-only person tracking
 
-<figure style="margin:1.5rem 0">
-<img src="/images/projects/example-project-one/cad-v2.webp" alt="Updated CAD of the combat robot" width="1600" height="939" loading="lazy" style="margin:0">
-<figcaption>Updated CAD</figcaption>
-</figure>
+<div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/CEK7YcAtK6Y" title="Exterminate turn-only person tracking" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
-<figure style="margin:1.5rem 0">
-<img src="/images/projects/example-project-one/cad-v3.webp" alt="Latest CAD of the combat robot with the Raspberry Pi and electronics inside the chassis and a purple spinner bar on a brushless motor" width="1302" height="984" loading="lazy" style="margin:0">
-<figcaption>Third CAD pass: the Raspberry Pi and electronics are packed into the chassis, with the spinner on a 2830 1100KV brushless motor.</figcaption>
-</figure>
+Before letting Exterminate drive at anyone, I'm getting it to just face me. The Pi 5 runs YOLOv8n on the camera feed at about 19 fps and sends turn commands to the Nano 30 times a second. The green box is me, and the cyan line is center. Detection stays locked on, but at nearly 10 lb the current drive motors can only really turn at full power, so tracking is stop-and-go and sometimes overshoots.
 
-<figure style="margin:1.5rem 0">
-<img src="/images/projects/example-project-one/cad-exterminate.webp" alt="Updated CAD of the robot with a camera housing on the weapon mount, the Raspberry Pi and electronics inside the chassis, and a purple spinner bar" width="1600" height="891" loading="lazy" style="margin:0">
-<figcaption>Updated CAD with the camera on the weapon mount.</figcaption>
-</figure>
-
-## Demo
-
-<!-- Video is embedded here (not via frontmatter `video:`) so the homepage keeps the VLM car video in its featured slot. -->
-<figure class="drive-test" style="margin:1.5rem 0">
-<video controls playsinline muted preload="metadata" poster="/images/projects/example-project-one/drive-test-poster.webp" width="406" height="720" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/example-project-one/drive-test.mp4" type="video/mp4"></video>
-<figcaption style="text-align:center">Getting the drive and weapon spinning. It's pretty scary so far. Computer vision coming next.</figcaption>
-</figure>
+Next up: stronger hobbyweight drive motors for smoother turns.
 
 ## Update · Oct 29, 2026
 
@@ -94,10 +77,27 @@ The first steering overcorrected because detection only runs a few times a secon
 
 Stronger motors, a CNC-cut steel spinner designed for maximum spin energy, and a speaker that says "EXTERMINATE" when it locks on.
 
-## Update · Oct 29, 2026 · Turn-only person tracking
+<div style="position:relative;aspect-ratio:16/9;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
-<div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/CEK7YcAtK6Y" title="Exterminate turn-only person tracking" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figure style="margin:1.5rem 0">
+<img src="/images/projects/example-project-one/cad-v2.webp" alt="Updated CAD of the combat robot" width="1600" height="939" loading="lazy" style="margin:0">
+<figcaption>Updated CAD</figcaption>
+</figure>
 
-Before letting Exterminate drive at anyone, I'm getting it to just face me. The Pi 5 runs YOLOv8n on the camera feed at about 19 fps and sends turn commands to the Nano 30 times a second. The green box is me, and the cyan line is center. Detection stays locked on, but at nearly 10 lb the current drive motors can only really turn at full power, so tracking is stop-and-go and sometimes overshoots.
+<figure style="margin:1.5rem 0">
+<img src="/images/projects/example-project-one/cad-v3.webp" alt="Latest CAD of the combat robot with the Raspberry Pi and electronics inside the chassis and a purple spinner bar on a brushless motor" width="1302" height="984" loading="lazy" style="margin:0">
+<figcaption>Third CAD pass: the Raspberry Pi and electronics are packed into the chassis, with the spinner on a 2830 1100KV brushless motor.</figcaption>
+</figure>
 
-Next up: stronger hobbyweight drive motors for smoother turns.
+<figure style="margin:1.5rem 0">
+<img src="/images/projects/example-project-one/cad-exterminate.webp" alt="Updated CAD of the robot with a camera housing on the weapon mount, the Raspberry Pi and electronics inside the chassis, and a purple spinner bar" width="1600" height="891" loading="lazy" style="margin:0">
+<figcaption>Updated CAD with the camera on the weapon mount.</figcaption>
+</figure>
+
+## Demo
+
+<!-- Video is embedded here (not via frontmatter `video:`) so the homepage keeps the VLM car video in its featured slot. -->
+<figure class="drive-test" style="margin:1.5rem 0">
+<video controls playsinline muted preload="metadata" poster="/images/projects/example-project-one/drive-test-poster.webp" width="406" height="720" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/example-project-one/drive-test.mp4" type="video/mp4"></video>
+<figcaption style="text-align:center">Getting the drive and weapon spinning. It's pretty scary so far. Computer vision coming next.</figcaption>
+</figure>
