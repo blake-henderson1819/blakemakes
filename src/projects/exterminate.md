@@ -17,7 +17,9 @@ tags: [placeholder, cad, fabrication]
 
 ### Exterminate: Building an Autonomous Combat Robot
 
-Exterminate is a combat robot that fights on its own. A camera and a Raspberry Pi 5 running a YOLO detector find the target, and the Pi tells an Arduino Nano how to steer, drive, and spin up the weapon. I can take over with the remote at any time, and a failsafe shuts everything down if the Pi stops talking.
+So I'm building a combat robot that can autonomously track and attack targets. I'm calling it Exterminate because one of my favorite shows as a kid was Doctor Who, where militaristic robotic aliens called the Daleks would always shout "EXTERMINATE!" before killing their enemies, and I always thought it was corny and funny.
+
+A camera and a Raspberry Pi 5 running a YOLO detector find the target, and the Pi tells an Arduino Nano how to steer, drive, and spin up the weapon. I can take over with the remote at any time, and a failsafe shuts everything down if the Pi stops talking.
 
 It started as a 3D-printed PLA prototype to prove out the layout and electronics. Now it's moving to real fighting hardware: a machined metal spinner, stronger brushless drive motors, and tougher chassis materials. The updates below follow it from a robot that drives to one that hunts.
 
