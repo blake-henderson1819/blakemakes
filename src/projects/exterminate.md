@@ -26,6 +26,10 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 
 </details>
 
+## Update · Nov 5, 2026
+
+<div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+
 ## Update · Oct 29, 2026 · Turn-only person tracking
 
 <div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/CEK7YcAtK6Y" title="Exterminate turn-only person tracking" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
@@ -76,8 +80,6 @@ The first steering overcorrected because detection only runs a few times a secon
 ### Next up
 
 Stronger motors, a CNC-cut steel spinner designed for maximum spin energy, and a speaker that says "EXTERMINATE" when it locks on.
-
-<div style="position:relative;aspect-ratio:16/9;margin:1.5rem 0"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/example-project-one/cad-v2.webp" alt="Updated CAD of the combat robot" width="1600" height="939" loading="lazy" style="margin:0">
