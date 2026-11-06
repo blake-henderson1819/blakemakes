@@ -8,6 +8,7 @@ homeVideo: https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&rel=0
 cover: /images/projects/example-project-one/spinner-cut.webp
 video: ""            # e.g. /images/projects/example-project-one/demo.mp4 or a YouTube embed URL
 pinned: true
+introFirst: true   # keeps "What I'm designing" above the cover; cover is shown right after it
 featured: true       # the most recent featured project with a video fills the homepage video slot
 tags: [placeholder, cad, fabrication]
 ---
@@ -26,6 +27,9 @@ Exterminate started as a 3D-printed PLA prototype to prove out the layout and el
 <p>The final build will move from PLA to tougher materials like a TPU or UHMW chassis and a hardened steel spinner, with all the electronics on a compact soldered perf board. Follow along as I go from a prototype that drives to a robot that fights on its own.</p>
 
 </details>
+
+<!-- Intro stays first. New updates go below this cover, newest first. -->
+<figure class="project__cover"><img src="{{ cover }}" alt="{{ title }} — cover photo" width="1600" height="1000"></figure>
 
 ## Update · Nov 5, 2026
 
