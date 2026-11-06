@@ -4,6 +4,7 @@ title: "Combat Robot"
 date: 2026-09-01
 repo: https://github.com/blake-henderson1819/exterminate
 summary: "Computer vision autonomous combat robot."
+homeVideo: https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&rel=0
 cover: /images/projects/example-project-one/robot-assembled.webp
 video: ""            # e.g. /images/projects/example-project-one/demo.mp4 or a YouTube embed URL
 pinned: true
