@@ -29,6 +29,22 @@ It started as a 3D-printed PLA prototype to prove out the layout and electronics
 
 ## Update log
 
+### Update · Nov 7, 2026
+
+#### Redoing the electronics
+
+The wiring had turned into a rat's nest from all the prototyping, so I tore it out and redid it. The Arduino Nano now sits on a soldered perf board instead of hanging off loose jumper wires, and everything inside the chassis is rerouted and cleaned up so it's easier to work on and less likely to shake loose.
+
+<figure style="margin:1.5rem 0">
+<img src="/images/projects/example-project-one/perfboard.webp" alt="Arduino Nano soldered onto a green perf board with header pins, on a spool of solder" width="1600" height="1200" loading="lazy" style="margin:0">
+<figcaption>The Nano on its new perf board.</figcaption>
+</figure>
+
+<figure style="margin:1.5rem 0">
+<img src="/images/projects/example-project-one/electronics-redo.webp" alt="Top view into the chassis with the rewired electronics: the Nano on its perf board, a speaker, power connectors, and the receiver" width="1600" height="1200" loading="lazy" style="margin:0">
+<figcaption>Everything rewired inside the chassis.</figcaption>
+</figure>
+
 ### Update · Nov 5, 2026
 
 <div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
