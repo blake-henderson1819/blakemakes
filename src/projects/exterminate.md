@@ -14,7 +14,7 @@ featured: true       # the most recent featured project with a video fills the h
 tags: [placeholder, cad, fabrication]
 ---
 
-## What I'm designing
+## Overview
 
 ### Exterminate: Building an Autonomous Combat Robot
 
@@ -27,13 +27,15 @@ It started as a 3D-printed PLA prototype to prove out the layout and electronics
 <!-- Intro stays first. New updates go below this cover, newest first. -->
 <figure class="project__cover"><img src="{{ cover }}" alt="{{ title }} — cover photo" width="1600" height="1000"></figure>
 
-## Update · Nov 5, 2026
+## Update log
+
+### Update · Nov 5, 2026
 
 <div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/sxFob8HbFJE?iv_load_policy=3&amp;rel=0" title="Exterminate video" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
-## Update · Oct 30, 2026
+### Update · Oct 30, 2026
 
-### Machining an upgraded spinner
+#### Machining an upgraded spinner
 
 I cut an upgraded spinner bar out of metal plate on a CNC router. The part is still held in by tabs, with chips piled up from the cut.
 
@@ -64,7 +66,7 @@ I cut an upgraded spinner bar out of metal plate on a CNC router. The part is st
 </div>
 <script src="/js/slideshow.js" defer></script>
 
-## Update · Oct 29, 2026 · Turn-only person tracking
+### Update · Oct 29, 2026 · Turn-only person tracking
 
 <div style="position:relative;aspect-ratio:16/9;margin:0 0 1.5rem"><iframe src="https://www.youtube.com/embed/CEK7YcAtK6Y" title="Exterminate turn-only person tracking" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 
@@ -72,9 +74,9 @@ Before letting Exterminate drive at anyone, I'm getting it to just face me. The 
 
 Next up: stronger hobbyweight drive motors for smoother turns.
 
-## Update · Oct 29, 2026
+### Update · Oct 29, 2026
 
-### Exterminate Update: It Hunts Now
+#### Exterminate Update: It Hunts Now
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/example-project-one/robot-assembled.webp" alt="The assembled robot on a wooden desk under a lamp, with a blue camera mount on top, wiring inside the open chassis, and a blue spinner bar on a motor at the front" width="1600" height="1200" loading="lazy" style="margin:0">
@@ -83,11 +85,11 @@ Next up: stronger hobbyweight drive motors for smoother turns.
 
 Exterminate can now find a person and chase them on its own. A Raspberry Pi 5 with a Camera Module 3 Wide runs a YOLOv8 person detector and sends drive commands to the Arduino Nano that runs the motors. The HotRC remote can still take over any time: touch the trigger or wheel and the remote wins, let go and the Pi drives again.
 
-### The stutter problem
+#### The stutter problem
 
 The first runs kept dying mid-chase. The Pi's logs showed electrical noise from the drive motors knocking out its USB port, then crashing the whole USB controller. Twisting the motor wires helped a little, but the real fix was dropping USB entirely: the Pi now talks to the Nano over three jumper wires on its serial pins, which can't crash the way USB did. (On a Pi 5, that also meant switching on the right serial port, since the default one points to the debug connector.)
 
-### First chase
+#### First chase
 
 Once the link was stable, it locked on and came straight at me, at full power at first. I've since turned the speed down.
 
@@ -96,7 +98,7 @@ Once the link was stable, it locked on and came straight at me, at full power at
 <figcaption style="text-align:center">I turn on the light and it comes after me.</figcaption>
 </figure>
 
-### Smoother tracking
+#### Smoother tracking
 
 The first steering overcorrected because detection only runs a few times a second, so the bot was always reacting to where I was. Now it turns in small nudges until I'm centered, then drives straight. It's still a bit clunky. Next up is fast frame-to-frame tracking and smoother steering control.
 
@@ -105,13 +107,13 @@ The first steering overcorrected because detection only runs a few times a secon
 <figcaption style="text-align:center">Tracking me as I walk around the room.</figcaption>
 </figure>
 
-### What I learned
+#### What I learned
 
 - Brushed motors make enough electrical noise to crash a computer's USB, so wire routing matters more than I expected.
 - The current drive motors are antweight motors on a roughly 8 lb bot. They push on hard floors but stall on carpet, so Repeat Ultra Mk2 brushless drive is the planned upgrade.
 - An upside-down camera swaps left and right, which is why it first turned away from me.
 
-### Next up
+#### Next up
 
 Stronger motors, a CNC-cut steel spinner designed for maximum spin energy, and a speaker that says "EXTERMINATE" when it locks on.
 
@@ -130,7 +132,7 @@ Stronger motors, a CNC-cut steel spinner designed for maximum spin energy, and a
 <figcaption>Updated CAD with the camera on the weapon mount.</figcaption>
 </figure>
 
-## Demo
+### Demo
 
 <!-- Video is embedded here (not via frontmatter `video:`) so the homepage keeps the VLM car video in its featured slot. -->
 <figure class="drive-test" style="margin:1.5rem 0">
