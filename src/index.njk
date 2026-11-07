@@ -35,7 +35,7 @@ layout: base.njk
       <a href="{{ p.url }}">
         {% if p.data.cover %}<img src="{{ p.data.cover }}" alt="" width="1600" height="1000" loading="lazy">{% else %}<div class="card__nocover ph" style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;border:1px dashed currentColor">[PLACEHOLDER: photo]</div>{% endif %}
         <p class="spec"><span>BH-{{ loop.index | pad }}</span><span>{{ p.date | monthYear }}</span></p>
-        <h3>{{ p.data.title }}</h3>
+        <h3>{{ p.data.title }}{% if p.data.wip %} <span class="wip" style="display:inline-block;vertical-align:middle;margin-left:.5rem;padding:.1rem .4rem;border:1px solid #d9480f;color:#d9480f;font-family:var(--mono,monospace);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;line-height:1.4;white-space:nowrap">Work in progress</span>{% endif %}</h3>
         <p>{{ p.data.summary }}</p>
       </a>
     </li>

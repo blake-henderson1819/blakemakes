@@ -1,5 +1,6 @@
 ---
 title: "Self-Balancing VESC-Controlled Humanoid"
+wip: true
 date: 2026-10-29
 summary: "A self-balancing hoverboard base with a 3D-printed humanoid on top."
 cover: /images/projects/self-balancing-humanoid/teardown.webp
