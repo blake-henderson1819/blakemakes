@@ -1,0 +1,6 @@
+/* project pages: wider content and bigger headings */
+.project .prose{max-width:58rem;font-size:1.1rem}
+.project .prose h2{font-size:1.15rem;margin-top:3.5rem}
+.project .prose h3{font-size:clamp(1.5rem,2.6vw,2rem);line-height:1.15;letter-spacing:-.01em;margin:3rem 0 1rem}
+.project .prose h4{font-size:1.3rem;line-height:1.25;margin:2rem 0 .75rem}
+.project .prose figure img,.project .prose figure video,.project .prose .project__cover img{width:100%}
