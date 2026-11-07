@@ -1,6 +1,6 @@
 ---
 title: "Motorized Surfboard"
-date: 2026-11-03
+date: 2026-09-01
 summary: "A remote-controlled, LiPo-powered surfboard I built after paddling gave me shoulder pain."
 cover: /images/projects/surfboard/thruster-mounted.webp
 pinned: false
