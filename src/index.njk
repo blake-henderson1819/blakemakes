@@ -8,13 +8,11 @@ layout: base.njk
 <section class="intro wrap" aria-labelledby="intro-h">
   <p class="spec"><span>Oregon State University</span><span>Engineering</span></p>
   <h1 id="intro-h">Where Blake Henderson builds things and documents it</h1>
-  <p class="lede">{{ site.intro }}</p>
 </section>
 
 <section id="projects" class="projects wrap" aria-labelledby="projects-h">
   <h2 id="projects-h" class="label"><span class="label__no">01</span> Projects</h2>
   <link rel="stylesheet" href="/css/grid.css">
-  <p class="pgrid__intro">I have built many different things in the past, but here is where I will document them from now on.</p>
   <ol class="pgrid">
     {% for p in collections.projects %}
     <li>

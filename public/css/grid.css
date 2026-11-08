@@ -1,5 +1,5 @@
 .pgrid__intro{max-width:36rem;margin:1rem auto 3rem;text-align:center;font-size:1.1rem;line-height:1.6}
-.pgrid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:3.5rem 2rem}
+.pgrid{margin-top:1.5rem!important;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:3.5rem 2rem}
 .pgrid a{display:block;color:inherit;text-decoration:none}
 .pgrid img,.pgrid__none{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#eee9e1}
 .pgrid__none{display:flex;align-items:center;justify-content:center;color:#777;font-size:.85rem}
