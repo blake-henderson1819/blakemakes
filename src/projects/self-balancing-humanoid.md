@@ -22,7 +22,7 @@ From there, I'll 3D print a small humanoid with a servo-controlled hinge at the 
 
 ## Update log
 
-### Nov 7, 2026
+### Update · Nov 7, 2026
 
 <figure style="margin:1.5rem 0">
 <div style="position:relative;aspect-ratio:16/9;margin:0"><iframe src="https://www.youtube.com/embed/Fmsy0CihHGs?iv_load_policy=3&amp;rel=0" title="Wiring Arduino and ESCs" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
