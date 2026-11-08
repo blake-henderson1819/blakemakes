@@ -29,14 +29,15 @@ layout: base.njk
 
 <section id="projects" class="projects wrap" aria-labelledby="projects-h">
   <h2 id="projects-h" class="label"><span class="label__no">02</span> Projects</h2>
-  <ol class="cards">
+  <link rel="stylesheet" href="/css/grid.css">
+  <p class="pgrid__intro">I have built many different things in the past, but here is where I will document them from now on.</p>
+  <ol class="pgrid">
     {% for p in collections.projects %}
-    <li class="card">
+    <li>
       <a href="{{ p.url }}">
-        {% if p.data.cover %}<img src="{{ p.data.cover }}" alt="" width="1600" height="1000" loading="lazy">{% else %}<div class="card__nocover ph" style="aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;border:1px dashed currentColor">[PLACEHOLDER: photo]</div>{% endif %}
-        <p class="spec"><span>BH-{{ loop.index | pad }}</span><span>{{ p.date | monthYear }}</span></p>
-        <h3>{{ p.data.title }}{% if p.data.wip %} <span class="wip" style="display:inline-block;vertical-align:middle;margin-left:.5rem;padding:.1rem .4rem;border:1px solid #d9480f;color:#d9480f;font-family:var(--mono,monospace);font-size:.7rem;letter-spacing:.04em;text-transform:uppercase;line-height:1.4;white-space:nowrap">Work in progress</span>{% endif %}</h3>
-        <p>{{ p.data.summary }}</p>
+        {% if p.data.cover %}<img src="{{ p.data.cover }}" alt="" width="1600" height="1200" loading="lazy">{% else %}<div class="pgrid__none">No photo yet</div>{% endif %}
+        <h3>{{ p.data.title }}</h3>
+        <p class="pgrid__meta">{{ p.date | monthYear }}{% if p.data.wip %} <span class="pgrid__wip">Work in progress</span>{% endif %}</p>
       </a>
     </li>
     {% endfor %}
