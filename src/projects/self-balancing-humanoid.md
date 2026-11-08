@@ -19,3 +19,12 @@ tags: [robotics, controls]
 I tore down this $25 hoverboard with a dead battery to get the frame and hub motors. When I get some time and finish my autonomous combat robot, I'll add inertial measurement units (IMUs) and a VESC motor controller to make the board self-balance.
 
 From there, I'll 3D print a small humanoid with a servo-controlled hinge at the waist so it can lean forward and backward while mounted on the hoverboard. I also plan to give it robotic arms so it can grab objects and place them.
+
+## Update log
+
+### Nov 7, 2026
+
+<figure style="margin:1.5rem 0">
+<div style="position:relative;aspect-ratio:16/9;margin:0"><iframe src="https://www.youtube.com/embed/Fmsy0CihHGs?iv_load_policy=3&amp;rel=0" title="Wiring Arduino and ESCs" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>Wiring Arduino and ESCs</figcaption>
+</figure>
