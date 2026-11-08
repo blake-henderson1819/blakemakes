@@ -23,7 +23,7 @@ a:hover{color:var(--accent)}
   background:repeating-linear-gradient(90deg,var(--ink) 0 1px,transparent 1px 10px);opacity:.35}
 .masthead__inner{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-top:1rem;padding-bottom:1.1rem;flex-wrap:wrap}
 .wordmark{font-weight:700;text-decoration:none;font-size:1rem;letter-spacing:-.01em}
-nav ul{list-style:none;margin:0;padding:0;display:flex;gap:1.25rem;font-size:.85rem}
+nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;font-size:.85rem}
 nav a{text-decoration:none}
 
 /* spec line: like a part label */
