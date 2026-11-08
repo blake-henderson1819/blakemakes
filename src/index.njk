@@ -1,8 +1,6 @@
 ---
 layout: base.njk
 ---
-{%- set fv = null -%}
-{%- for p in collections.projects -%}{%- if not fv and p.data.featured and (p.data.pinned or p.data.homeVideo or p.data.video) -%}{%- set fv = p -%}{%- endif -%}{%- endfor -%}
 <figure class="banner wrap">
   <img src="/images/workbench.webp" alt="My desk at night: a laptop with code open, a multimeter, breadboards, jumper wires, and parts bins under a desk lamp" width="2400" height="533">
 </figure>
@@ -14,21 +12,8 @@ layout: base.njk
   <div style="position:relative;aspect-ratio:16/9;margin:1.5rem 0 0;max-width:720px"><iframe src="https://www.youtube.com/embed/npEH_GGPW8I?cc_load_policy=0&amp;iv_load_policy=3&amp;rel=0" title="Preface: a quick intro from Blake" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
 </section>
 
-<section class="featured wrap" aria-labelledby="featured-h">
-  <h2 id="featured-h" class="label"><span class="label__no">01</span> Featured build</h2>
-  <figure class="featured__media">
-    {% if fv %}
-      {% set src = fv.data.homeVideo or fv.data.video %}{% set poster = fv.data.homePoster or fv.data.cover %}{% set label = fv.data.title %}{% if src %}{% include "media.njk" %}{% else %}<a href="{{ fv.url }}" aria-label="{{ fv.data.title }} project page">{% include "media.njk" %}</a>{% endif %}
-      <figcaption class="mono"><a href="{{ fv.url }}">{{ fv.data.title }}</a> — {{ fv.data.summary }}</figcaption>
-    {% else %}
-      {% set src = site.featuredVideo %}{% set poster = site.featuredVideoPoster %}{% set label = "VLM car demo video" %}{% include "media.njk" %}
-      <p class="featured__note">For an in-depth explanation, check out the <a href="https://github.com/blake-henderson1819/vlm-car#readme">README</a> in the <a href="https://github.com/blake-henderson1819/vlm-car">VLM car GitHub repo</a>.</p>
-    {% endif %}
-  </figure>
-</section>
-
 <section id="projects" class="projects wrap" aria-labelledby="projects-h">
-  <h2 id="projects-h" class="label"><span class="label__no">02</span> Projects</h2>
+  <h2 id="projects-h" class="label"><span class="label__no">01</span> Projects</h2>
   <link rel="stylesheet" href="/css/grid.css">
   <p class="pgrid__intro">I have built many different things in the past, but here is where I will document them from now on.</p>
   <ol class="pgrid">
@@ -45,7 +30,7 @@ layout: base.njk
 </section>
 
 <section id="about" class="about wrap" aria-labelledby="about-h">
-  <h2 id="about-h" class="label"><span class="label__no">03</span> About</h2>
+  <h2 id="about-h" class="label"><span class="label__no">02</span> About</h2>
   <div class="about__body">
     <img class="about__photo" src="/images/blake.webp" alt="Blake Henderson" width="480" height="480" loading="lazy">
     <p class="about__text">{{ site.about }}</p>
@@ -53,7 +38,7 @@ layout: base.njk
 </section>
 
 <section id="contact" class="contact wrap" aria-labelledby="contact-h">
-  <h2 id="contact-h" class="label"><span class="label__no">04</span> Contact</h2>
+  <h2 id="contact-h" class="label"><span class="label__no">03</span> Contact</h2>
   <dl class="contact__list">
     <div><dt>Email</dt><dd><a href="mailto:{{ site.email }}">{{ site.email }}</a>{% if site.emailIsPlaceholder %} <span class="ph">[PLACEHOLDER]</span>{% endif %}</dd></div>
     <div><dt>GitHub</dt><dd><a href="{{ site.github }}">{{ site.github | replace("https://", "") }}</a></dd></div>
