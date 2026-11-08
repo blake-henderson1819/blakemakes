@@ -1,6 +1,6 @@
 ---
 # PLACEHOLDER TEMPLATE — copy this file, rename it, and replace every [PLACEHOLDER].
-title: "Combat Robot"
+title: "Autonomous Combat Robot"
 wip: true
 date: 2026-09-01
 repo: https://github.com/blake-henderson1819/exterminate
