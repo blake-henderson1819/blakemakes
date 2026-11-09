@@ -15,7 +15,10 @@ layout: base.njk
     {% set src = video %}{% set poster = cover %}{% set label = title + " demo video" %}{% include "media.njk" %}
   </figure>
   {% elif cover and not hideCover and not introFirst %}
-  <figure class="project__cover"><img src="{{ cover }}" alt="{{ title }} — cover photo" width="1600" height="1000"></figure>
+  <figure class="project__cover">
+    <img src="{{ cover }}" alt="{{ title }} — cover photo" width="1600" height="1000">
+    {% if coverCaption %}<figcaption>{{ coverCaption }}</figcaption>{% endif %}
+  </figure>
   {% endif %}
   <div class="prose">
     {{ content | safe }}
