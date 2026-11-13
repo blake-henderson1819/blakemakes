@@ -30,6 +30,14 @@ Today I debugged for five hours trying to get the motors to spin smoothly. Below
 <video controls playsinline preload="metadata" poster="/images/projects/self-balancing-humanoid/imu-poster.webp" width="1280" height="720" aria-label="Video: getting the IMU working" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/self-balancing-humanoid/imu.mp4" type="video/mp4"></video>
 </figure>
 
+### Update · Nov 10, 2026
+
+#### Getting the Hall Effect ESCs online
+
+<figure style="margin:1.5rem 0">
+<video controls playsinline preload="metadata" poster="/images/projects/self-balancing-humanoid/hall-escs-poster.webp" width="1280" height="720" aria-label="Video: getting the Hall Effect ESCs online" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/self-balancing-humanoid/hall-escs.mp4" type="video/mp4"></video>
+</figure>
+
 ### Update · Nov 7, 2026
 
 <figure style="margin:1.5rem 0">
