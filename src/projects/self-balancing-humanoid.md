@@ -48,7 +48,7 @@ Today I debugged for five hours trying to get the motors to spin smoothly. Below
 ## What I'm designing
 
 <figure style="margin:1.5rem 0">
-<img src="/images/projects/self-balancing-humanoid/cad-render.webp" alt="Initial CAD mockup of a small humanoid on a two-wheeled hoverboard base" width="1600" height="1200" loading="lazy" style="margin:0">
+<img src="/images/projects/self-balancing-humanoid/so101-render.webp" alt="CAD render of an SO-101 robot arm mounted on my hoverboard chassis" width="1600" height="1200" loading="lazy" style="margin:0">
 <figcaption>Initial mockup of my idea. Most likely will change in the future.</figcaption>
 </figure>
 
