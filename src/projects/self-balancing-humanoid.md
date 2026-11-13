@@ -4,6 +4,7 @@ wip: true
 date: 2026-10-29
 summary: "A self-balancing hoverboard base with a 3D-printed humanoid on top."
 cover: /images/projects/self-balancing-humanoid/electronics.webp
+cardImage: /images/projects/self-balancing-humanoid/electronics-card.webp
 video: ""
 featured: false
 tags: [robotics, controls]
