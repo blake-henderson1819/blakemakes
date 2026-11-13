@@ -14,7 +14,13 @@ tags: [robotics, controls]
 
 ### Update · Nov 12, 2026
 
-#### Canbus Purgatory
+#### CAN bus purgatory
+
+Today I debugged for five hours trying to get the motors to spin smoothly. Below is motor noise I couldn't figure out.
+
+### Update · Nov 11, 2026
+
+#### Getting the IMU working
 
 ### Update · Nov 7, 2026
 
