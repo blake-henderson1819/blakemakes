@@ -3,14 +3,17 @@ title: "Self-Balancing VESC-Controlled Humanoid"
 wip: true
 date: 2026-10-29
 summary: "A self-balancing hoverboard base with a 3D-printed humanoid on top."
-cover: /images/projects/self-balancing-humanoid/cad-render.webp
-coverCaption: "Initial mockup of my idea. Most likely will change in the future."
+cover: /images/projects/self-balancing-humanoid/electronics.webp
 video: ""
 featured: false
 tags: [robotics, controls]
 ---
 
 ## Update log
+
+### Update · Nov 12, 2026
+
+#### Canbus Purgatory
 
 ### Update · Nov 7, 2026
 
@@ -20,6 +23,11 @@ tags: [robotics, controls]
 </figure>
 
 ## What I'm designing
+
+<figure style="margin:1.5rem 0">
+<img src="/images/projects/self-balancing-humanoid/cad-render.webp" alt="Initial CAD mockup of a small humanoid on a two-wheeled hoverboard base" width="1600" height="1200" loading="lazy" style="margin:0">
+<figcaption>Initial mockup of my idea. Most likely will change in the future.</figcaption>
+</figure>
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/self-balancing-humanoid/teardown.webp" alt="Torn-down hoverboard with its covers off, showing the frame, wiring, and two hub-motor wheels" width="1600" height="1200" loading="lazy" style="margin:0">
