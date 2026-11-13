@@ -18,6 +18,10 @@ tags: [robotics, controls]
 
 Today I debugged for five hours trying to get the motors to spin smoothly. Below is motor noise I couldn't figure out.
 
+<figure style="margin:1.5rem 0">
+<video controls playsinline preload="metadata" poster="/images/projects/self-balancing-humanoid/motor-noise-poster.webp" width="1280" height="720" aria-label="Video: motor noise I couldn't figure out" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/self-balancing-humanoid/motor-noise.mp4" type="video/mp4"></video>
+</figure>
+
 ### Update · Nov 11, 2026
 
 #### Getting the IMU working
