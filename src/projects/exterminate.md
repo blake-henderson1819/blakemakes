@@ -29,6 +29,16 @@ It started as a 3D-printed PLA prototype to prove out the layout and electronics
 
 ## Update log
 
+### Update · Nov 15, 2026
+
+#### Putting Llama 3.2 1B LLM on my combat robot
+
+I put an LLM on my robot along with a Dalek voice to be able to follow commands and converse with the user. I also retuned the firmware to track more smoothly and reliably.
+
+<figure style="margin:1.5rem 0">
+<video controls playsinline preload="metadata" poster="/images/projects/example-project-one/llm-voice-poster.webp" width="1280" height="720" aria-label="Video: talking to the robot's onboard LLM" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/example-project-one/llm-voice.mp4" type="video/mp4"></video>
+</figure>
+
 ### Update · Nov 10, 2026
 
 #### Fried camera ports
