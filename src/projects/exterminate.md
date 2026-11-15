@@ -29,6 +29,12 @@ It started as a 3D-printed PLA prototype to prove out the layout and electronics
 
 ## Update log
 
+### Update · Nov 10, 2026
+
+#### Fried camera ports
+
+I accidentally broke the camera module during a weapon test. I swapped a new camera into the module, but it still didn't work, so it looks like the board's camera ports got damaged. What's interesting is that I plugged it into a completely new Raspberry Pi and it didn't work there either. So I ended up tearing my webcam apart and plugging it into one of the Pi's USB ports instead.
+
 ### Update · Nov 7, 2026
 
 #### Redoing the electronics
