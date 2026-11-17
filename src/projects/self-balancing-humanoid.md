@@ -2,7 +2,7 @@
 title: "Self-Balancing Robotic Arm"
 wip: true
 date: 2026-10-29
-summary: "A self-balancing hoverboard base with a 3D-printed humanoid on top."
+summary: "A self-balancing hoverboard base with an SO-101 robotic arm on top."
 cover: /images/projects/self-balancing-humanoid/electronics.webp
 cardImage: /images/projects/self-balancing-humanoid/electronics-card.webp
 video: ""
@@ -64,6 +64,6 @@ Today I debugged for five hours trying to get the motors to spin smoothly. Below
 <figcaption>The $25 hoverboard, torn down for its frame and hub motors.</figcaption>
 </figure>
 
-I tore down this $25 hoverboard with a dead battery to get the frame and hub motors. When I get some time and finish my autonomous combat robot, I'll add inertial measurement units (IMUs) and a VESC motor controller to make the board self-balance.
+I tore down this $25 hoverboard with a dead battery to get the frame and hub motors. The plan is to make the board self-balance using an IMU and the hoverboard's Hall effect motor controllers, then mount an SO-101 open-source robotic arm on top.
 
-From there, I'll 3D print a small humanoid with a servo-controlled hinge at the waist so it can lean forward and backward while mounted on the hoverboard. I also plan to give it robotic arms so it can grab objects and place them.
+The arm is already built and I can control it from my webcam. Next, I'll mount it on the hoverboard and tie it into the balancing system so the robot can stay upright while it reaches for, grabs, and places objects.
