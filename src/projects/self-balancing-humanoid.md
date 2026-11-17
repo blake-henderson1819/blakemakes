@@ -1,5 +1,5 @@
 ---
-title: "Self-Balancing VESC-Controlled Humanoid"
+title: "Self-Balancing Robotic Arm"
 wip: true
 date: 2026-10-29
 summary: "A self-balancing hoverboard base with a 3D-printed humanoid on top."
@@ -11,6 +11,13 @@ tags: [robotics, controls]
 ---
 
 ## Update log
+
+### Update · Nov 16, 2026
+
+<figure style="margin:1.5rem 0">
+<div style="position:relative;aspect-ratio:16/9;margin:0"><iframe src="https://www.youtube.com/embed/bSRBcPby0BQ?iv_load_policy=3&amp;rel=0" title="Robotic arm controlled from my webcam" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+<figcaption>I put together the robotic arm and controlled it from my webcam. The next step is to mount it on the hoverboard and integrate it with the self balancing technology.</figcaption>
+</figure>
 
 ### Update · Nov 12, 2026
 
