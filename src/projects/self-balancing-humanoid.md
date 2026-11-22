@@ -3,7 +3,8 @@ title: "Self-Balancing Robotic Arm"
 wip: true
 date: 2026-10-29
 summary: "A self-balancing hoverboard base with an SO-101 robotic arm on top."
-cover: /images/projects/self-balancing-humanoid/electronics.webp
+cover: /images/projects/self-balancing-humanoid/so101-render.webp
+coverCaption: "Initial mockup of my idea. Most likely will change in the future."
 cardImage: /images/projects/self-balancing-humanoid/electronics-card.webp
 video: ""
 featured: false
@@ -53,11 +54,6 @@ Today I debugged for five hours trying to get the motors to spin smoothly. Below
 </figure>
 
 ## What I'm designing
-
-<figure style="margin:1.5rem 0">
-<img src="/images/projects/self-balancing-humanoid/so101-render.webp" alt="CAD render of an SO-101 robot arm mounted on my hoverboard chassis" width="1600" height="1200" loading="lazy" style="margin:0">
-<figcaption>Initial mockup of my idea. Most likely will change in the future.</figcaption>
-</figure>
 
 <figure style="margin:1.5rem 0">
 <img src="/images/projects/self-balancing-humanoid/teardown.webp" alt="Torn-down hoverboard with its covers off, showing the frame, wiring, and two hub-motor wheels" width="1600" height="1200" loading="lazy" style="margin:0">
