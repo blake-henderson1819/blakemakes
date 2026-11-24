@@ -43,6 +43,10 @@ Next: turn Balance fully off on the left ESC, spin-test both wheels, then retune
 
 #### IMU working, Balance vibrating
 
+<figure style="margin:1.5rem 0">
+<video controls playsinline preload="metadata" poster="/images/projects/self-balancing-humanoid/balance-vibrating-poster.webp" width="1280" height="720" aria-label="Video: Nov 19 balance testing" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/self-balancing-humanoid/balance-vibrating.mp4" type="video/mp4"></video>
+</figure>
+
 The IMU problem turned out to be swapped SDA/SCL. On VESC hardware 4.10 it's SDA to COMM TX and SCL to COMM RX, the opposite of the VESC 6 layout. With that fixed I saved my configs and set up the IMU orientation and the Balance app. Balance vibrated even with lowered gains and the IMU rigidly mounted, and DRV faults kept coming up. Reloading a known-good left motor config made the motor smooth again, and the "ticking" on manual duty commands turned out to be the Balance package overriding them.
 
 ### Update · Nov 18, 2026
