@@ -13,6 +13,24 @@ tags: [robotics, controls]
 
 ## Update log
 
+### Update · Nov 23, 2026
+
+#### It finally balances
+
+<figure style="margin:1.5rem 0">
+<video controls playsinline preload="metadata" poster="/images/projects/self-balancing-humanoid/balancing-poster.webp" width="1280" height="720" aria-label="Video: the hoverboard base balancing on its own" style="display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:80vh;border:1px solid var(--rule)"><source src="/images/projects/self-balancing-humanoid/balancing.mp4" type="video/mp4"></video>
+</figure>
+
+After a lot of debugging, the base finally self-balances.
+
+The last big problem was one wheel jittering constantly. I swapped which ESC was the leader and which was the follower, and the jitter always followed whichever ESC was the CAN follower in Balance mode, so the follower was getting its commands late. Twisting the CAN wires, changing the baud rate (250K made it worse), lowering the loop rate, and tuning Rate P didn't fix it, and the bus termination checked out at about 50 ohms.
+
+The fix was to stop having one ESC drive the other over CAN. Now each ESC runs Balance on its own with its own IMU: an Adafruit LSM6DS3TR-C on the left and a GY-BMI160 on the right, each wired to its ESC's COMM port as I2C (TX to SDA, RX to SCL). Two ESCs can't share one IMU because each one is an I2C master. I turned off "Multiple VESCs over CAN" in Balance.
+
+The BMI160 wouldn't show up until I tied SA0 to ground and added 2k pull-ups from SCL and SDA to 3.3V. After that I calibrated the IMU orientation on each ESC so both agree on level within a fraction of a degree. Any mismatch made it walk and turn to one side, so I trimmed pitch until it tracked straight. I also designed and 3D-printed a mount for the BMI160 with pegs that locate in the board's mounting holes and a window for the wires.
+
+Next up: mounting the SO-101 arm on top.
+
 ### Update · Nov 21, 2026
 
 #### Found a dead splitter leg
