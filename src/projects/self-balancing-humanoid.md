@@ -12,6 +12,16 @@ tags: [robotics, controls]
 
 ## Update log
 
+### Update · Nov 24, 2026
+
+#### Arm mounted, driving around
+
+<figure style="margin:1.5rem 0">
+<div style="position:relative;aspect-ratio:16/9;margin:0"><iframe src="https://www.youtube.com/embed/xa6bHL74zhU?iv_load_policy=3&amp;rel=0" title="Robotic arm mounted on the hoverboard, driving around" style="position:absolute;inset:0;width:100%;height:100%;border:1px solid var(--ink)" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+</figure>
+
+I mounted the SO-101 robotic arm on the self-balancing hoverboard base, and it now balances while driving forward, back, and turning left and right.
+
 ### Update · Nov 23, 2026
 
 #### It finally balances
